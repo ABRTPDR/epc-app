@@ -1,19 +1,28 @@
-const tintColorLight = '#2f95dc';
-const tintColorDark = '#fff';
+const epcBlack = '#191919';
+const epcGrey = '#727070';
+const epcLightGrey = '#DEDEDE';
+const epcWhite = '#FFFFFF';
+const epcOffWhite = '#F6F6F6';
+const epcLavender = '#DBCDF0';
+const epcGreen = '#C9E4DF';
+const epcBlue = '#C5DEF2';
+const epcYellow = '#FFE3B0';
+const epcNavy = '#000E79'
 
 export default {
-  light: {
-    text: '#000',
-    background: '#fff',
-    tint: tintColorLight,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#fff',
-    background: '#000',
-    tint: tintColorDark,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorDark,
-  },
+  text: epcBlack,
+  background: epcWhite,
+  white: epcWhite,
+  tint: epcLavender,
+  green: epcGreen,
+  blue: epcBlue,
+  yellow: epcYellow,
+  grey: epcGrey,
+  lightgrey: epcLightGrey,
+  navBar: epcLightGrey,
+  navIconActive: epcBlack,
+  navIconInactive: epcGrey,
+  card: epcOffWhite,
+  darkwhite: epcOffWhite,
+  url: epcNavy,
 };

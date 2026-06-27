@@ -1,23 +1,33 @@
 {
   "expo": {
-    "name": "epc-app",
+    "name": "EPC App",
     "slug": "epc-app",
-    "version": "1.0.0",
+    "scheme": "epcapp",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "epcapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "1",
+      "infoPList": {
+        "LSApplicationQueriesSchemes": [
+          "mailto",
+          "tel"
+        ]
+      },
+      "bundleIdentifier": "com.epc.app"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFFFFF",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": true,
+      "package": "com.epc.app",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro",
@@ -33,10 +43,19 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-web-browser",
+      "withAndroidQueries.js",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f5aa86c7-801b-41b2-b585-6ea8520d6d80"
+      }
     }
   }
 }
