@@ -2,21 +2,25 @@
   "expo": {
     "name": "EPC App",
     "slug": "epc-app",
-    "scheme": "epcapp",
-    "version": "0.1.0",
+    "scheme": "epcbits",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "1",
+      "buildNumber": "2",
       "infoPList": {
         "LSApplicationQueriesSchemes": [
           "mailto",
           "tel"
         ]
       },
-      "bundleIdentifier": "com.epc.app"
+      "bundleIdentifier": "com.epc.app",
+      "associatedDomains": [
+        "applinks:epcbits.com",
+        "applinks:map.epcbits.com"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +31,20 @@
       },
       "predictiveBackGestureEnabled": true,
       "package": "com.epc.app",
-      "versionCode": 1
+      "versionCode": 1,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            { "scheme": "https", "host": "epcbits.com", "pathPrefix": "/" },
+            { "scheme": "http", "host": "epcbits.com", "pathPrefix": "/" },
+            { "scheme": "https", "host": "map.epcbits.com", "pathPrefix": "/" },
+            { "scheme": "http", "host": "map.epcbits.com", "pathPrefix": "/" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",

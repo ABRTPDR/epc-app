@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { View, TextInput, StyleSheet, FlatList, ActivityIndicator, Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useInfiniteQuery } from '@tanstack/react-query'; // SWAPPED: Now supports pagination
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
-import { Link, useRouter, Stack } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { decode } from 'html-entities';
 import { Image } from 'expo-image';
 
@@ -14,13 +14,46 @@ import SearchClearIcon from '@/components/icons/SearchClearIcon';
 import { wpApi, EPCArticle } from '@/services/api';
 import PressableRipple from '@/components/PressableRipple';
 import IconFadeAnimation from '@/components/IconFadeAnimation';
+import { 
+  TFP_CATALOG, 
+  AEP_CATALOG, 
+  BEP_CATALOG, 
+  OEP_CATALOG 
+} from '@/constants/Publications';
 
-// 1. Updated to accept 'page' parameter and hardcode per_page=10
+// Helper function to map WP category IDs back to Press/Year/Issue structure
+function findArticleClassification(categoryIds: number[]) {
+  const catalogs = [
+    { press: 'TFP', data: TFP_CATALOG },
+    { press: 'AEP', data: AEP_CATALOG },
+    { press: 'BEP', data: BEP_CATALOG },
+    { press: 'OEP', data: OEP_CATALOG },
+  ];
+
+  for (const { press, data } of catalogs) {
+    for (const [year, yearCatalog] of Object.entries(data)) {
+      for (const issue of yearCatalog.issues) {
+        if ('children' in issue) {
+          for (const child of issue.children) {
+            if (categoryIds.includes(child.categoryId)) {
+              return { press, year, issueName: issue.name };
+            }
+          }
+        } else if (categoryIds.includes(issue.categoryId)) {
+          return { press, year, issueName: issue.name };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// Accepts 'page' parameter, hardcoded per_page=10
 const searchArticles = async (searchTerm: string, page: number): Promise<EPCArticle[]> => {
-  // Wrap 2-letter queries in parentheses instead of appending a space because most likely searches are SU or EC which will be declared in parentheses in article
+  // Wrap 2-letter queries in parentheses instead of appending a space because eg. likely searches are SU or EC which will be declared in parentheses in article
   const apiTerm = searchTerm.length === 2 ? `(${searchTerm})` : searchTerm;
   
-  // This will now reliably convert "(ab)" to "%28ab%29"
+  // Convert eg. "(ab)" to "%28ab%29"
   const encodedSearch = encodeURIComponent(apiTerm); 
   
   const response = await wpApi.get(`/posts?_embed&search=${encodedSearch}&page=${page}&per_page=10`);
@@ -28,7 +61,6 @@ const searchArticles = async (searchTerm: string, page: number): Promise<EPCArti
 };
 
 export default function SearchExpandedScreen() {
-  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   const [inputText, setInputText] = useState('');
@@ -42,22 +74,21 @@ export default function SearchExpandedScreen() {
     }
   };
 
-  // 1. If the input perfectly matches the active search, they haven't started retyping yet!
+  // If input perfectly matches active search, user has not started retyping yet
   const isShowingClearIcon = searchQuery.length > 1 && inputText.trim() === searchQuery;
 
-  // 2. A dual-purpose handler for the right-side button
+  // Handler for the right-side search bar button
   const handleRightIconPress = () => {
     if (isShowingClearIcon) {
-      // If it's an X, clear the text box AND the results
+      // If clear icon, clear text box and results
       setInputText('');
       setSearchQuery('');
     } else {
-      // If it's a magnifying glass, submit the search
+      // If search icon, submit search
       handleSearchSubmit();
     }
   };
 
-  // 2. Swapped to useInfiniteQuery
   const { 
     data, 
     isLoading, 
@@ -66,10 +97,10 @@ export default function SearchExpandedScreen() {
     isFetchingNextPage 
   } = useInfiniteQuery({
     queryKey: ['epc_search', searchQuery],
-    // 1. Tell TypeScript pageParam is a number here
+    // Tell TS pageParam is a number here
     queryFn: ({ pageParam }) => searchArticles(searchQuery, pageParam as number),
     
-    // 2. ADD THIS LINE: Explicitly set the starting page for v5
+    // Explicitly set starting page
     initialPageParam: 1, 
     
     getNextPageParam: (lastPage, allPages) => {
@@ -78,45 +109,58 @@ export default function SearchExpandedScreen() {
     enabled: searchQuery.length > 1, 
   });
 
-  // 3. ADD 'as EPCArticle[]': Explicitly tell TypeScript what this array holds!
+  // as EPCArticle[]: Tell TS what array holds
   const searchResults = (data?.pages.flat() as EPCArticle[]) || [];
 
-  /*
-  const renderSearchResult = ({ item }: { item: EPCArticle }) => (
-    <Link href={{ pathname: '/article/[id]', params: { id: item.id } }} asChild>
-      <View style={styles.resultCardMask}>
-        <PressableRipple style={styles.resultCard}>
-          <Text style={styles.resultTitle} numberOfLines={2}>
-            {decode(item.title.rendered)}
-          </Text>
-        </PressableRipple>
-      </View>
-    </Link>
-  );
-  */
  const renderSearchResult = ({ item }: { item: EPCArticle }) => {
-    // 1. Extract the meta-data
+    // Extract article image
     const thumbnailUrl = item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-    const wpCategories = item._embedded?.['wp:term']?.[0];
-    const rawCategory = wpCategories && wpCategories.length > 0 ? wpCategories[0].name : 'Article';
-    const categoryName = decode(rawCategory); //to convert stuff like '&amp' to '&'
-    const publishDate = new Date(item.date).toLocaleDateString('en-IN', {
-      month: 'short', day: 'numeric'
+    // Conditionally use URL image or local fallback
+    const headerImageSource = thumbnailUrl 
+      ? { uri: thumbnailUrl } 
+      : require('@/assets/images/Fallback.png');
+    
+    // Calculate the classification
+    const categoryIds = item.categories || [];
+    const classification = findArticleClassification(categoryIds);
+    
+    // Strip special fest names (eg. "2026 - The Skeumorph" -> "2026")
+    const cleanYear = classification?.year.split(' –')[0] || '';
+
+    let classificationText = 'Article';
+    if (classification) {
+      // Split the string by spaces/hyphens
+      const words = classification.issueName.split(/[\s\-]+/);
+      
+      // Output first two words and append '...' if third word exists
+      const shortIssueName = words.slice(0, 2).join(' ') + (words.length > 2 ? '...' : '');
+      classificationText = `${classification.press} ${cleanYear} / ${shortIssueName}`;
+    }
+
+    // Format date as eg. "Aug 29"
+    const publishDate = new Date(item.date).toLocaleDateString('en-US', {
+      month: 'short', year: 'numeric'
     });
+
+    // Combine classification and date, make uppercase
+    const metaString = `${classificationText}  ·  ${publishDate}`.toUpperCase();
 
     return (
       <View style={styles.resultCardMask}>
         <PressableRipple style={styles.resultCard} onPress={() => router.push(`/article/${item.id}`)}>
           
-          {/* The image is now a child of resultCard, no longer pushed by padding */}
-          {thumbnailUrl && (
-            <Image source={{ uri: thumbnailUrl }} style={styles.resultImage} />
-          )}
+          <Image 
+            source={headerImageSource} 
+            style={styles.resultImage}
+            contentFit="cover"
+          />
           
           <View style={styles.resultTextContainer}>
+            {/* Metadata string: category and date */}
             <Text style={styles.metaText} numberOfLines={1} ellipsizeMode="tail">
-              {categoryName.toUpperCase()} • {publishDate}
+              {metaString}
             </Text>
+            
             <Text style={styles.resultTitle} numberOfLines={2}>
               {decode(item.title.rendered)}
             </Text>
@@ -128,7 +172,7 @@ export default function SearchExpandedScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <SafeAreaView style={styles.container} >
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar style="dark" />
       
@@ -136,29 +180,36 @@ export default function SearchExpandedScreen() {
         <View style={styles.searchBar}>
           <BackButton onPress={() => router.back()} color={Colors.grey} absolute={false}/>
           
-          <TextInput
-            style={[styles.searchInput, { fontFamily: 'Lora' }]}
-            placeholder="Search..."
-            placeholderTextColor={Colors.grey}
-            value={inputText}
-            onChangeText={setInputText}
-            autoFocus 
-            returnKeyType="search"
-            onSubmitEditing={handleSearchSubmit} 
-          />
+          <View style={styles.inputWrapper}>
+            {/* Custom text prompt placeholder to guarantee Lora font, not working if style applied to TextInput directly */}
+            {!inputText && (
+              <Text style={styles.placeholderText} pointerEvents="none">{/* pointerEvents=none means placeholder text is not pressable, passed to TextInput */}
+                Search...
+              </Text>
+            )}
+
+            <TextInput
+              style={styles.searchInput}
+              value={inputText}
+              onChangeText={setInputText}
+              autoFocus 
+              returnKeyType="search"
+              onSubmitEditing={handleSearchSubmit} 
+            />
+          </View>
 
           <IconFadeAnimation
             onPress={handleRightIconPress} 
             style={[styles.searchButton, { top: 0 }]}
           >
-            {/* 3. Instantly swap the SVG based on the typing state */}
+            {/* Swap right-side search bar icon based on state */}
             {isShowingClearIcon ? <SearchClearIcon /> : <SearchIcon />}
           </IconFadeAnimation>
 
         </View>
       </View>
 
-      {/* Main loading state for the very first search */}
+      {/* Main loading state for first search */}
       {isLoading && searchQuery.length > 1 && (
         <ActivityIndicator style={{ marginTop: 40 }} size="large" color={Colors.tint} />
       )}
@@ -174,7 +225,7 @@ export default function SearchExpandedScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         
-        // 4. Infinite Scroll Triggers
+        // Infinite scroll triggers
         onEndReached={() => {
           if (hasNextPage) {
             fetchNextPage();
@@ -182,14 +233,14 @@ export default function SearchExpandedScreen() {
         }}
         onEndReachedThreshold={0.5} 
         
-        // 5. The bottom spinner for subsequent pages
+        // Bottom spinner for subsequent pages
         ListFooterComponent={
           isFetchingNextPage ? (
             <ActivityIndicator style={{ paddingVertical: 20 }} size="large" color={Colors.tint} />
           ) : null
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -212,18 +263,27 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.grey,
   },
+  inputWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    height: '100%',
+  },
+  placeholderText: {
+    position: 'absolute',
+    fontFamily: 'Lora',
+    fontSize: 20,
+    color: Colors.grey,
+    left: 4, // Align with where input text starts
+  },
   searchInput: {
-    flex: 1, // Added flex: 1 so it pushes the Enter button to the right
-    height: '100%', 
+    flex: 1, // Push button to right side of search bar
+    height: '100%',
     fontSize: 20,
     fontFamily: 'Lora',
-    color: Colors.text, // Changed to Colors.text so user input is dark and readable
-    // Need to add below lines to make 'Search...' prompt also be Lora [BT HERE IT ALTERNATES BETWEEN LORA AND DEFAULT FOR SOME REASON ON SEARCH LAUNCH]
-    fontWeight: 'normal', 
-    fontStyle: 'normal',
+    color: Colors.text,
   },
   searchBarMask: {
-    marginHorizontal: 24,
+    marginHorizontal: 20,
     marginTop: 16,
     borderRadius: 25,
     overflow: 'hidden',
@@ -242,7 +302,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   listContent: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingBottom: 100, 
     paddingTop: 8,      
   },
@@ -258,10 +318,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkwhite,
     flexDirection: 'row',
     alignItems: 'center',
-    //paddingVertical: 20,
     paddingRight: 24,
     borderRadius: 20, 
     justifyContent: 'center',
+    height: 100,
   },
   resultImage: {
     height: 100,
@@ -269,18 +329,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightgrey, // Placeholder color while loading
   },
   resultTextContainer: {
-    flex: 1, // Ensures text takes up remaining space
+    flex: 1,
     justifyContent: 'center',
     paddingVertical: 20,
-    paddingLeft: 20,
+    paddingLeft: 18,
   },
   metaText: {
     fontFamily: 'LatoSemibold',
-    fontSize: 12,
-    color: Colors.url,
-    marginBottom: 4,
-    includeFontPadding: false, // Disables extra Android vertical spacing
-    textAlignVertical: 'center', // Aligns text strictly to the container
+    fontSize: 13,
+    color: Colors.grey,
+    marginBottom: 8,
+    includeFontPadding: false, // Disable extra Android vertical spacing
+    textAlignVertical: 'center', // Align text to container
   },
   resultTitle: {
     fontFamily: 'LatoSemibold',

@@ -28,10 +28,21 @@ export const fetchArticleById = async (id: string): Promise<EPCArticle> => {
   return response.data;
 };
 
+export const fetchArticleBySlug = async (slug: string): Promise<EPCArticle> => {
+  // WordPress returns an array when querying by slug
+  const response = await wpApi.get(`/posts?slug=${slug}&_embed`);
+  if (!response.data || response.data.length === 0) {
+    throw new Error("Article not found");
+  }
+  return response.data[0]; 
+};
+
 // Define shape of WordPress JSON payload
 export interface EPCArticle {
   id: number;
   date: string;
+  link: string;
+  categories: number[];
   title: {
     rendered: string;
   };

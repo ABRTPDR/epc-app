@@ -53,13 +53,12 @@ export default function TabLayout() {
         */
         
         tabBarIconStyle: { 
-          marginTop: -15, // Ions position
+          marginTop: -15, // Icons position
         },
         tabBarLabelStyle: {
           fontSize: 14,
           fontFamily: 'Lato',
-          position: 'absolute',
-          bottom: 4,
+          marginTop: 12,
         },
         headerShown: false,
       }}>

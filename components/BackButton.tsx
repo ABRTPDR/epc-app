@@ -1,12 +1,11 @@
 import { View, StyleSheet, Pressable, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Svg, { Defs, RadialGradient, Stop, Circle } from 'react-native-svg';
 import Colors from '@/constants/Colors';
 
 import BackIcon from '@/components/icons/BackIcon';
-import IconFadeAnimation from '@/components/IconFadeAnimation';
 
 // Tell TS to expect onPress function
 interface BackButtonProps {
@@ -94,7 +93,7 @@ export default function BackButton({ onPress, color=Colors.darkwhite, shadow = f
 
       style={[
         absolute ? styles.absoluteButton : styles.relativeButton, 
-        absolute && { top: insets.top + 24, left: 30 }
+        absolute && { top: insets.top + 24, left: 24 }
       ]}
     >
       {/* 4. Wrap the icon in an Animated.View mapped to our fadeAnim */}
