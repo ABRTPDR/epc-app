@@ -251,7 +251,7 @@ export const AEP_CATALOG: Record<string, YearCatalog> = {
 }
 
 export const AEP_YEARS_ORDER = [
-  "2026 – The Skeumorph",
+  "2026 – The Skeuomorph",
   "2025 – Tempora Mutantur",
   "2024",
   "2023",
