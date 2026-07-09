@@ -34,7 +34,7 @@ export const TFP_CATALOG: Record<string, YearCatalog> = {
       { name: "Issue One", categoryId: 447 },
 			{ name: "Issue Two", categoryId: 450 },
       { name: "Issue Three", categoryId: 462 },
-      { name: "Issue Three", categoryId: 463 },
+      { name: "Issue Four", categoryId: 463 },
     ]
   },
   "2024": {
@@ -161,13 +161,13 @@ export const TFP_YEARS_ORDER = [
 
 export const AEP_CATALOG: Record<string, YearCatalog> = {
   /*
-  "2026 – The Skeumorph": {
+  "2026 – The Skeuomorph": {
     issues: [
       { name: "Issue Zero (Pre-fest)", categoryId: 469 },
     ]
   },
   */
-  "2026 – The Skeumorph": {
+  "2026 – The Skeuomorph": {
     issues: [
       { 
         name: "Issue Zero (Pre-fest)", 
