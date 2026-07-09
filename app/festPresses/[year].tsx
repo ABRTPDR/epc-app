@@ -76,6 +76,8 @@ export default function FestPressYearScreen() {
       : selectedIssue.categoryId.toString();
   }, [selectedIssue]);
 
+  /*
+  // Commented out: Logic without article inclusion/exclusion
   const { data: articles, isLoading, isError } = useQuery({
     // Inject catIds directly into key so cache is strictly separated
     queryKey: ['fest_articles', press, year, selectedIssue?.name, catIds],
@@ -104,6 +106,72 @@ export default function FestPressYearScreen() {
     } 
     
     // Fallback for standard, non-grouped issues
+    return [{ title: '', data: articles }];
+  }, [articles, selectedIssue]);
+  */
+ const { data: articles, isLoading, isError } = useQuery({
+    queryKey: ['fest_articles', press, year, selectedIssue?.name, catIds],
+    queryFn: async () => {
+      let allArticles: any[] = [];
+
+      // Main fetch: only fetch standard categories if ID is not '0' placeholder
+      if (catIds !== '0') {
+        const catResponse = await axios.get(
+          `https://epcbits.com/wp-json/wp/v2/posts?categories=${catIds}&_embed&per_page=100`
+        );
+        allArticles = catResponse.data;
+      }
+
+      // Overrides: pull arrays from either an Issue or GroupedIssue's children
+      let excludedIds: number[] = [];
+      let includedIds: number[] = [];
+
+      if ('children' in selectedIssue) {
+        selectedIssue.children.forEach(child => {
+          if (child.excludedArticles) excludedIds.push(...child.excludedArticles);
+          if (child.includedArticles) includedIds.push(...child.includedArticles);
+        });
+      } else {
+        if (selectedIssue.excludedArticles) excludedIds.push(...selectedIssue.excludedArticles);
+        if (selectedIssue.includedArticles) includedIds.push(...selectedIssue.includedArticles);
+      }
+
+      // Excluded articles
+      if (excludedIds.length > 0) {
+        allArticles = allArticles.filter(article => !excludedIds.includes(article.id));
+      }
+
+      // Included articles: get by ID and append
+      if (includedIds.length > 0) {
+        const idsString = includedIds.join(',');
+        const extraResponse = await axios.get(
+          `https://epcbits.com/wp-json/wp/v2/posts?include=${idsString}&_embed`
+        );
+        allArticles = [...allArticles, ...extraResponse.data];
+      }
+
+      return allArticles;
+    },
+    // !!'0' is technically true in JS, ensure it fires perfectly every time
+    enabled: catIds !== undefined && catIds !== null && catIds !== '', 
+  });
+
+  // Group the fetched articles under their child subheadings
+  const sections = useMemo(() => {
+    if (!articles) return [];
+
+    if ('children' in selectedIssue) {
+      return selectedIssue.children.map(child => ({
+        title: child.name,
+        // Filter bulk response to match category ID or explicitly included IDs
+        data: articles.filter((a: any) => 
+          a.categories.includes(child.categoryId) || 
+          (child.includedArticles && child.includedArticles.includes(a.id))
+        )
+      })).filter(section => section.data.length > 0); // Hide subheadings that have 0 articles
+    } 
+    
+    // Fallback for standard, non-grouped issues (catches categoryId: 0 dummy issues)
     return [{ title: '', data: articles }];
   }, [articles, selectedIssue]);
 

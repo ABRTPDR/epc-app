@@ -15,6 +15,9 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
 
+        // Prevent nav bar text from breaking fixed-height layout
+        tabBarAllowFontScaling: false,
+
         // Nav bar icon+text colour scheme
         tabBarActiveTintColor: Colors.navIconActive,
         tabBarInactiveTintColor: Colors.navIconInactive,

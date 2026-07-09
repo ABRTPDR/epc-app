@@ -19,7 +19,7 @@ const BulletPoint = ({ children }: { children: React.ReactNode }) => {
   return (
     <View style={styles.bulletRow}>
       <Text style={styles.bullet}>•</Text>
-      <Text style={[styles.cardBodyText, { paddingTop: 1, paddingRight: 120 }]}>{children}</Text>
+      <Text style={[styles.cardBodyText, { paddingTop: 1 }]}>{children}</Text>
     </View>
   );
 }; 
@@ -57,7 +57,7 @@ export default function ExploreScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
 
-      <View style={[styles.searchBarMask, { marginBottom: 16 }]}>
+      <View style={[styles.searchBarMask, { marginBottom: 12 }]}>
           <PressableRipple style={styles.searchBar} onPress={() => router.push('/search')}>
             <StylisedSearch width={53} height={55} style={styles.stylisedSearch} />
             <Text style={styles.searchInactiveText}>Search for an article...</Text>
@@ -73,7 +73,7 @@ export default function ExploreScreen() {
             </View>
             <View style={styles.divider} />
             <View style={styles.cardBody}>
-              <Text style={[styles.cardBodyText, { paddingTop: 12, paddingRight: 140 }]}>The campus newsletter. New issues every other month.</Text>
+              <Text style={[styles.cardBodyText, { paddingTop: 12 }]}>The campus newsletter. New{'\n'}issues every other month.</Text>
               <View style={styles.watermarkContainerEPC}>
                 <EPCGraphic width={220} />
               </View>
@@ -108,10 +108,10 @@ export default function ExploreScreen() {
                   onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'AEP', year: AEP_YEARS_ORDER[0] } })}
                 >
                   <View style={styles.cardBody}>
-                    <Text style={[styles.cardSubheaderText, { paddingTop: 8, paddingRight: 128 }]}>APOGEE ENGLISH PRESS</Text>
+                    <Text style={[styles.cardSubheaderText, { paddingTop: 8 }]}>APOGEE ENGLISH PRESS</Text>
                     <BulletList 
                       items={[
-                        'Pre-fest interviews — club coords and the CoStAA.', 
+                        'Pre-fest interviews — club coords\nand the CoStAA.', 
                         'Digital archives of fest issues.'
                       ]} 
                     />
@@ -127,10 +127,10 @@ export default function ExploreScreen() {
                   onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'BEP', year: BEP_YEARS_ORDER[0] } })}
                 >
                   <View style={styles.cardBody}>
-                    <Text style={[styles.cardSubheaderText, { paddingTop: 8, paddingRight: 128 }]}>BOSM ENGLISH PRESS</Text>
+                    <Text style={[styles.cardSubheaderText, { paddingTop: 8 }]}>BOSM ENGLISH PRESS</Text>
                     <BulletList 
                       items={[
-                        'Pre-fest interviews — team captains and the CoSSAc.', 
+                        'Pre-fest interviews — team\ncaptains and the CoSSAc.', 
                         'Digital archives of fest issues.'
                       ]} 
                     />
@@ -146,10 +146,10 @@ export default function ExploreScreen() {
                   onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'OEP', year: OEP_YEARS_ORDER[0] } })}
                 >
                   <View style={styles.cardBody}>
-                    <Text style={[styles.cardSubheaderText, { paddingTop: 8, paddingRight: 128 }]}>OASIS ENGLISH PRESS</Text>
+                    <Text style={[styles.cardSubheaderText, { paddingTop: 8 }]}>OASIS ENGLISH PRESS</Text>
                     <BulletList
                       items={[
-                        'Pre-fest interviews — club coords and the StuCCA.', 
+                        'Pre-fest interviews — club coords\nand the StuCCA.', 
                         'Digital archives of fest issues.'
                       ]} 
                     />
@@ -178,7 +178,7 @@ export default function ExploreScreen() {
             </View>
             <View style={styles.divider} />
             <View style={styles.cardBody}>
-              <Text style={[styles.cardBodyText, { paddingTop: 12 }]}>Campus literary magazine; for writers, poets, artists. Currently archived, CF returns soon.</Text>
+              <Text style={[styles.cardBodyText, { paddingTop: 12 }]}>Campus literary magazine; for writers, poets, and{'\n'}artists. Currently archived, CF returns soon.</Text>
               <Image
                 source={require('@/assets/images/ArchiveGraphic.png')} 
                 style={styles.archiveGraphic}
@@ -236,7 +236,6 @@ const styles = StyleSheet.create({
     color: Colors.grey,
   },
   searchBarMask: {
-    marginTop: 8,
     borderRadius: 25,
     overflow: 'hidden',
     margin: 20,

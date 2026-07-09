@@ -45,14 +45,8 @@ export default function TfpYearScreen() {
     value: issue.name 
   }));
 
- // Calculate IDs before the query so React Query can track them
-  const catIds = useMemo(() => {
-    if (!selectedIssue) return '';
-    return 'children' in selectedIssue 
-      ? selectedIssue.children.map(c => c.categoryId).join(',')
-      : selectedIssue.categoryId.toString();
-  }, [selectedIssue]);
-
+  /*
+  // Commented out: Logic without article inclusion/exclusion
   // TanStack query: automatically refetch and separate caches based on catIds
   const { data: articles, isLoading, isError } = useQuery({
     // CRITICAL: catIds is now in the key to prevent cache poisoning
@@ -64,6 +58,80 @@ export default function TfpYearScreen() {
       return response.data;
     },
     enabled: !!catIds, 
+  });
+  */
+
+ // Calculate IDs and overrides before the query so React Query can track them
+  const { catIds, includedStr, excludedStr } = useMemo(() => {
+    if (!selectedIssue) return { catIds: '', includedStr: '', excludedStr: '' };
+
+    let cats: number[] = [];
+    let inc: number[] = [];
+    let exc: number[] = [];
+
+    // Check for children in case TFP ever uses GroupedIssues
+    if ('children' in selectedIssue) {
+      selectedIssue.children.forEach(c => {
+        cats.push(c.categoryId);
+        if (c.includedArticles) inc.push(...c.includedArticles);
+        if (c.excludedArticles) exc.push(...c.excludedArticles);
+      });
+    } else {
+      cats.push(selectedIssue.categoryId);
+      if (selectedIssue.includedArticles) inc.push(...selectedIssue.includedArticles);
+      if (selectedIssue.excludedArticles) exc.push(...selectedIssue.excludedArticles);
+    }
+
+    return {
+      catIds: cats.join(','),
+      includedStr: inc.join(','),
+      excludedStr: exc.join(','),
+    };
+  }, [selectedIssue]);
+
+  // TanStack query: automatically refetch and separate caches
+  const { data: articles, isLoading, isError } = useQuery({
+    // Included and excluded strings are in the key
+    // If inclusion/exclusion changed in Publications.ts, overrides cache
+    queryKey: ['epc_articles', year, selectedIssue?.name, catIds, includedStr, excludedStr],
+    
+    queryFn: async () => {
+      let allArticles: any[] = [];
+
+      // Main fetch: only fetch standard categories if ID is not '0' placeholder
+      if (catIds !== '0') {
+        const catResponse = await axios.get(
+          `https://epcbits.com/wp-json/wp/v2/posts?categories=${catIds}&_embed&per_page=30`
+        );
+        allArticles = catResponse.data;
+      }
+
+      // Excluded articles
+      if (excludedStr) {
+        const excludedIds = excludedStr.split(',').map(Number);
+        allArticles = allArticles.filter(article => !excludedIds.includes(article.id));
+      }
+
+      // Included articles
+      if (includedStr) {
+        const extraResponse = await axios.get(
+          `https://epcbits.com/wp-json/wp/v2/posts?include=${includedStr}&_embed`
+        );
+        
+        // Prevent FlatList crashes by filtering out potential duplicate IDs
+        const newArticles = extraResponse.data.filter(
+          (newArt: any) => !allArticles.some(existingArt => existingArt.id === newArt.id)
+        );
+
+        allArticles = [...allArticles, ...newArticles];
+      }
+
+      // Sort by date (newest first)
+      allArticles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      return allArticles;
+    },
+    enabled: catIds !== undefined && catIds !== null && catIds !== '', 
   });
 
   // To handle 2017 'Letters to the Editor', the two child articles have different publishing dates in 2017

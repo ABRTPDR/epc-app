@@ -56,7 +56,7 @@ const handleGamePress = () => {
 };
 
 // Helper function to map WP category IDs back to Press/Year/Issue structure
-function findArticleClassification(categoryIds: number[]) {
+function findArticleClassification(categoryIds: number[], articleId: number) {
   const catalogs = [
     { press: 'TFP', data: TFP_CATALOG },
     { press: 'AEP', data: AEP_CATALOG },
@@ -69,12 +69,24 @@ function findArticleClassification(categoryIds: number[]) {
       for (const issue of yearCatalog.issues) {
         if ('children' in issue) {
           for (const child of issue.children) {
-            if (categoryIds.includes(child.categoryId)) {
+            // Check: is it explicitly included here?
+            if (child.includedArticles?.includes(articleId)) {
+              return { press, year, issueName: issue.name };
+            }
+            // Fallback check: does it match the category and is not excluded?
+            if (categoryIds.includes(child.categoryId) && !child.excludedArticles?.includes(articleId)) {
               return { press, year, issueName: issue.name };
             }
           }
-        } else if (categoryIds.includes(issue.categoryId)) {
-          return { press, year, issueName: issue.name };
+        } else {
+          // Check: is it explicitly included here?
+          if (issue.includedArticles?.includes(articleId)) {
+            return { press, year, issueName: issue.name };
+          }
+          // Fallback check: does it match the category and is not excluded?
+          if (categoryIds.includes(issue.categoryId) && !issue.excludedArticles?.includes(articleId)) {
+            return { press, year, issueName: issue.name };
+          }
         }
       }
     }
@@ -113,7 +125,7 @@ export default function HomeScreen() {
       : require('@/assets/images/Fallback.png');
 
     const categoryIds = item.categories || [];
-    const classification = findArticleClassification(categoryIds);
+    const classification = findArticleClassification(categoryIds, item.id);
     
     const cleanYear = classification?.year.split(' –')[0] || '';
 

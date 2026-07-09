@@ -101,7 +101,7 @@ const OverlayPressable = ({ onPress, style, children, ...props }: any) => (
   </View>
 );
 
-// Tell HTML parser to accept iframes and object tags as valid block elements
+// Tell HTML parser to accept iframes, object tags and AMP text tags as valid block elements
 const customHTMLElementModels = {
   iframe: HTMLElementModel.fromCustomModel({
     tagName: 'iframe',
@@ -111,6 +111,10 @@ const customHTMLElementModels = {
   object: HTMLElementModel.fromCustomModel({
     tagName: 'object',
     mixedUAStyles: { width: '100%', height: 500 },
+    contentModel: HTMLContentModel.block,
+  }),
+  'amp-fit-text': HTMLElementModel.fromCustomModel({
+    tagName: 'amp-fit-text',
     contentModel: HTMLContentModel.block,
   }),
 };
@@ -159,7 +163,7 @@ const renderers = {
 };
 
 // Helper function to map WP category IDs back to Press/Year/Issue structure
-function findArticleClassification(categoryIds: number[]) {
+function findArticleClassification(categoryIds: number[], articleId: number) {
   const catalogs = [
     { press: 'TFP', data: TFP_CATALOG },
     { press: 'AEP', data: AEP_CATALOG },
@@ -170,18 +174,26 @@ function findArticleClassification(categoryIds: number[]) {
   for (const { press, data } of catalogs) {
     for (const [year, yearCatalog] of Object.entries(data)) {
       for (const issue of yearCatalog.issues) {
-        // If grouped issue, check its children
         if ('children' in issue) {
           for (const child of issue.children) {
-            if (categoryIds.includes(child.categoryId)) {
-              // Return the parent's name (eg. "Issue Zero (Pre-fest)" instead of "Clubs")
+            // 1. Priority check: explicitly included here?
+            if (child.includedArticles?.includes(articleId)) {
+              return { press, year, issueName: issue.name };
+            }
+            // 2. Fallback check: matches category AND not excluded?
+            if (categoryIds.includes(child.categoryId) && !child.excludedArticles?.includes(articleId)) {
               return { press, year, issueName: issue.name };
             }
           }
-        } 
-        // If standard issue, check its own ID
-        else if (categoryIds.includes(issue.categoryId)) {
-          return { press, year, issueName: issue.name };
+        } else {
+          // 1. Priority check: explicitly included here?
+          if (issue.includedArticles?.includes(articleId)) {
+            return { press, year, issueName: issue.name };
+          }
+          // 2. Fallback check: matches category AND not excluded?
+          if (categoryIds.includes(issue.categoryId) && !issue.excludedArticles?.includes(articleId)) {
+            return { press, year, issueName: issue.name };
+          }
         }
       }
     }
@@ -361,7 +373,7 @@ export default function ArticleScreen() {
 
   // Find classification
   const categoryIds = article.categories || [];
-  const classification = findArticleClassification(categoryIds);
+  const classification = findArticleClassification(categoryIds, article.id);
   
   // Strip special fest names from year string for the pill (eg. "2026 - The Skeumorph" -> "2026")
   const cleanYear = classification?.year.split(' –')[0] || '';
