@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { WebView } from 'react-native-webview';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 import Colors from '@/constants/Colors';
 import BackButton from '@/components/BackButton';
@@ -14,6 +15,8 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
+      
       <Stack.Screen options={{ headerShown: false }} />
 
       <BackButton onPress={() => router.back()} color={Colors.grey} />

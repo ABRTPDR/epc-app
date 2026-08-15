@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import RenderHtml from 'react-native-render-html';
 import { decode } from 'html-entities';
 import { Image } from 'expo-image';
@@ -119,6 +120,15 @@ const customHTMLElementModels = {
   }),
 };
 
+// Force the webpage to allow pinch-to-zoom
+const enableZoomScript = `
+  const meta = document.createElement('meta');
+  meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes');
+  meta.setAttribute('name', 'viewport');
+  document.head.appendChild(meta);
+  true;
+`;
+
 // Define how the iframe or object should be drawn using a WebView
 const renderers = {
   iframe: ({ tnode }: any) => {
@@ -126,12 +136,19 @@ const renderers = {
     if (!src) return null;
 
     return (
-      <View style={{ width: '100%', height: 590, marginVertical: 12, borderRadius: 12, overflow: 'hidden' }}>
+      <View style={{ width: '100%', height: 630, marginVertical: 4, borderRadius: 12, overflow: 'hidden' }}>
         <WebView
           source={{ uri: src }}
           style={{ flex: 1 }}
           nestedScrollEnabled={true} 
           showsVerticalScrollIndicator={true}
+          javaScriptEnabled={true} 
+          domStorageEnabled={true}
+          // Zoom props
+          scalesPageToFit={true} // Essential for iOS
+          setBuiltInZoomControls={true} // Essential for Android pinch-to-zoom
+          setDisplayZoomControls={false} // Hides the clunky +/- magnifying glass buttons on Android
+          injectedJavaScript={enableZoomScript} // Overrides anti-zoom HTML tags
         />
       </View>
     );
@@ -205,7 +222,7 @@ export default function ArticleScreen() {
   const { id } = useLocalSearchParams(); // Get ID from URL
   const router = useRouter();
   const insets = useSafeAreaInsets(); // Help place header elements below notches
-  const { width } = useWindowDimensions(); // Used to scale HTML content
+  const { width, height } = useWindowDimensions(); // Used to scale HTML content and in image gallery zoom
   
   // Initialise scroll tracker
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -218,9 +235,16 @@ export default function ArticleScreen() {
   const [showShadow, setShowShadow] = useState(true);
   const showShadowRef = useRef(true); // Track state silently to prevent effect re-binding
 
-  // Image viewer state
+  // Image viewer state (Already inside your component)
   const [viewerVisible, setViewerVisible] = useState(false);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
+  // Zoom and Swipe tracking refs
+  const imageScale = useRef(new Animated.Value(1)).current;
+  const panX = useRef(new Animated.Value(0)).current;
+  const panY = useRef(new Animated.Value(0)).current;
+  const initialPinchDistance = useRef<number | null>(null);
+  const initialFocal = useRef({ x: 0, y: 0 }); // Stores where the pinch started
 
   // Handle OS back gesture while on image gallery screen
   useEffect(() => {
@@ -329,25 +353,102 @@ export default function ArticleScreen() {
     }
   }), [articleImages]);
 
-  // Swipe gesture handler for image gallery
+  // Swipe and Pinch gesture handler for image gallery
   const galleryPanResponder = useMemo(() => PanResponder.create({
-    // Only claim touch if user is swiping horizontally (prevents blocking taps)
+    
+    // Claim responder if 2 fingers (pinch) OR 1 finger swiping horizontally
     onMoveShouldSetPanResponder: (evt, gestureState) => {
-      return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 20;
+      const touches = evt.nativeEvent.touches.length;
+      return touches === 2 || (touches === 1 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 20);
     },
-    onPanResponderRelease: (evt, gestureState) => {
-      // Swiped right (distance > 40px)
-      // Go to previous image
-      if (gestureState.dx > 40) {
-        setCurrentImgIndex(prev => Math.max(0, prev - 1));
-      } 
-      // Swiped left (distance < -40px)
-      // Go to next image
-      else if (gestureState.dx < -40) {
-        setCurrentImgIndex(prev => Math.min(articleImages.length - 1, prev + 1));
+    
+    onPanResponderMove: (evt, gestureState) => {
+      const touches = evt.nativeEvent.touches;
+      
+      // Handle Zooming (2 fingers)
+      if (touches.length === 2) {
+        const t1 = touches[0];
+        const t2 = touches[1];
+        
+        const dx = t1.pageX - t2.pageX;
+        const dy = t1.pageY - t2.pageY;
+        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+
+        if (!initialPinchDistance.current) {
+          initialPinchDistance.current = currentDistance;
+          
+          // 1. Find the exact center of the pinch
+          const pinchX = (t1.pageX + t2.pageX) / 2;
+          const pinchY = (t1.pageY + t2.pageY) / 2;
+          
+          // 2. Calculate the offset from the dead-center of the screen
+          const offsetX = pinchX - (width / 2);
+          const offsetY = pinchY - (height / 2);
+          
+          // Heuristic bounds check: If pinch is in the top/bottom 25%, it's likely outside the contained image bounds
+          const isOutsideImage = pinchY < height * 0.25 || pinchY > height * 0.75;
+          
+          // Store the starting focal point (or default to 0 if outside bounds)
+          initialFocal.current = { 
+            x: isOutsideImage ? 0 : offsetX, 
+            y: isOutsideImage ? 0 : offsetY 
+          };
+        } else {
+          const zoom = Math.min(Math.max(currentDistance / initialPinchDistance.current, 1), 2); // Last number decides extent of zoom
+          imageScale.setValue(zoom);
+          
+          // Translate image simultaneously to keep the focal point pinned under the fingers
+          panX.setValue(-initialFocal.current.x * (zoom - 1));
+          panY.setValue(-initialFocal.current.y * (zoom - 1));
+        }
       }
+      // Handle Swiping (1 finger)
+      else if (touches.length === 1 && !initialPinchDistance.current) {
+        // Physically move the image with the user's finger!
+        panX.setValue(gestureState.dx);
+      }
+    },
+    
+    onPanResponderRelease: (evt, gestureState) => {
+      if (!initialPinchDistance.current) {
+        // --- SWIPE LOGIC ---
+        if (gestureState.dx > 50 && currentImgIndex > 0) {
+          // Swipe Right
+          Animated.timing(panX, { toValue: width, duration: 150, useNativeDriver: true }).start(() => {
+            setCurrentImgIndex(prev => prev - 1);
+            panX.setValue(-width);
+            Animated.spring(panX, { toValue: 0, useNativeDriver: true, bounciness: 6 }).start();
+          });
+        } else if (gestureState.dx < -50 && currentImgIndex < articleImages.length - 1) {
+          // Swipe Left
+          Animated.timing(panX, { toValue: -width, duration: 150, useNativeDriver: true }).start(() => {
+            setCurrentImgIndex(prev => prev + 1);
+            panX.setValue(width);
+            Animated.spring(panX, { toValue: 0, useNativeDriver: true, bounciness: 6 }).start();
+          });
+        } else {
+          // Swiping on first or last image, or failed swipe: snap back to center
+          Animated.spring(panX, { toValue: 0, useNativeDriver: true }).start();
+        }
+      } else {
+        // Pinch logic: reset panX and panY here so we don't conflict with a swipe animation
+        Animated.spring(panX, { toValue: 0, useNativeDriver: true }).start();
+        Animated.spring(panY, { toValue: 0, useNativeDriver: true }).start();
+      }
+
+      // Always reset scale and pinch tracking
+      initialPinchDistance.current = null;
+      Animated.spring(imageScale, { toValue: 1, useNativeDriver: true, bounciness: 8 }).start();
+    },
+  
+    onPanResponderTerminate: () => {
+      initialPinchDistance.current = null;
+      Animated.spring(imageScale, { toValue: 1, useNativeDriver: true, bounciness: 8 }).start();
+      Animated.spring(panX, { toValue: 0, useNativeDriver: true }).start();
+      Animated.spring(panY, { toValue: 0, useNativeDriver: true }).start();
     }
-  }), [articleImages.length]);
+  }), [articleImages.length, imageScale, panX, panY, currentImgIndex, width, height]);
+
 
   if (isLoading || !article) {
     return (
@@ -398,7 +499,7 @@ export default function ArticleScreen() {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Check out this article: ${decode(article.title.rendered)}\n${article.link}`,
+        message: `Check out this EPC article:\n${decode(article.title.rendered)}\n${article.link}`,
         url: article.link,
         title: decode(article.title.rendered),
       });
@@ -426,6 +527,7 @@ export default function ArticleScreen() {
 
  return (
     <View style={styles.container}>
+      <StatusBar style="light" />
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Scrolling content */}
@@ -470,24 +572,18 @@ export default function ArticleScreen() {
           {/* Metadata row */}
           <View style={styles.metadataRow}>
             {/* Category pill */}
-            <View style={[styles.categoryPillMask, {backgroundColor: pillColor}]}>
-              <PressableRipple style={styles.categoryPill} onPress={handleCategoryPress}>
-                <Text style={styles.categoryPillText} numberOfLines={1}>{classificationText}</Text>
-              </PressableRipple>
-            </View>
+            <PressableRipple style={[styles.categoryPill, {backgroundColor: pillColor}]} onPress={handleCategoryPress}>
+              <Text style={styles.categoryPillText} numberOfLines={1}>{classificationText}</Text>
+            </PressableRipple>
             {/* Date pill */}
-            <View style={styles.datePillMask}>
-              <PressableRipple style={styles.datePill}>
-                <CalendarIcon />
-                <Text style={styles.datePillText}>{publishDate}</Text>
-              </PressableRipple>
-            </View>
+            <PressableRipple style={styles.datePill}>
+              <CalendarIcon />
+              <Text style={styles.datePillText}>{publishDate}</Text>
+            </PressableRipple>
             {/* Share button */}
-            <View style={styles.shareButtonMask}>
-              <PressableRipple style={styles.shareButton} onPress={handleShare}>
-                <ShareIcon />
-              </PressableRipple>
-            </View>
+            <PressableRipple style={styles.shareButton} onPress={handleShare}>
+              <ShareIcon />
+            </PressableRipple>
           </View>
 
           <RenderHtml
@@ -563,11 +659,14 @@ export default function ArticleScreen() {
             style={{ flex: 1, paddingTop: HEADER_MIN_HEIGHT, paddingBottom: 100 }}
             {...galleryPanResponder.panHandlers}
           >
-             <Image 
-               source={{ uri: articleImages[currentImgIndex] }} 
-               style={{ flex: 1, width: '100%' }} 
-               contentFit="contain" 
-             />
+             <Animated.View style={{ flex: 1, transform: [{ scale: imageScale }, { translateX: panX }] }}>
+               <Image 
+                 source={{ uri: articleImages[currentImgIndex] }} 
+                 style={{ flex: 1, width: '100%' }} 
+                 contentFit="contain" 
+                 transition={150} 
+               />
+             </Animated.View>
           </View>
 
           {/* Image navigator at bottom */}
@@ -671,18 +770,15 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   categoryPill: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    flexShrink: 1, // Allow pill to shrink and ellipsize to maintain one-line metadata row
   },
   categoryPillText: {
     fontFamily: 'LatoSemibold',
     fontSize: 13,
     color: Colors.text,
-  },
-  categoryPillMask: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    flexShrink: 1, // Allow pill to shrink and ellipsize to maintain one-line metadata row
   },
   datePill: {
     flexDirection: 'row',
@@ -690,30 +786,23 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 4,
     paddingHorizontal: 10,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: Colors.lightGrey,
   },
   datePillText: {
     fontFamily: 'LatoSemibold',
     fontSize: 13,
     color: Colors.grey,
   },
-  datePillMask: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#DBDBDB',
-  },
   shareButton: {
-    flex: 1, // Fill 32x32 mask below
     alignItems: 'center',
     padding: 6,
-  },
-  shareButtonMask: {
     borderRadius: 16,
-    overflow: 'hidden',
     width: 32,
     height: 32,
     borderWidth: 2,
-    borderColor: '#DBDBDB',
+    borderColor: Colors.lightGrey,
   },
   imageNavigator: {
     position: 'absolute',

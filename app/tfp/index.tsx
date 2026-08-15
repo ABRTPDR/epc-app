@@ -15,10 +15,10 @@ export default function TfpScreen() {
 
       <View style={styles.header}>
           <BackButton onPress={() => router.back()} color={Colors.grey} />
-          <SearchButton onPress={() => router.push('/search')} color={Colors.grey} />
+          <SearchButton onPress={() => router.push({ pathname: '/search', params: { filters: 'TFP' } })} color={Colors.grey} />
           <Text style={styles.headerTitle}>THE FINE PRINT</Text>
           <Text style={styles.headerDescription}>
-            The campus newsletter. New issues every other month. Get up to speed on words, words, elections, and more.
+            The campus newsletter. New{'\n'}issues every other month. Get{'\n'}up to speed on words, words,{'\n'}elections, and more.
           </Text>
           <View style={styles.watermarkContainerEPC}>
             <EPCGraphic width={218} />
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     backgroundColor: Colors.green,
-    paddingVertical: 2,
+    paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 16,
   },
@@ -125,5 +125,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato',
     fontSize: 14,
     color: Colors.text,
+    includeFontPadding: false,
+    lineHeight: 14,
   }
 });

@@ -40,12 +40,26 @@ const ITEM_SPACING = 0;
 // Total space one item occupies (used for snapping and animation)
 const FULL_ITEM_SIZE = ITEM_WIDTH + ITEM_SPACING;
 
+// Force the Jetpack CDN to resize images on the edge server
+const optimiseJetpackUrl = (url: string | undefined, size: number) => {
+  if (!url) return null;
+  
+  // If it goes through the WP global CDN (i0.wp.com, i1.wp.com, etc.)
+  if (url.includes('.wp.com')) {
+    const baseUrl = url.split('?')[0]; // Strip the unnecessarily large ?fit params
+    // Use URL-encoded commas "%2C"
+    return `${baseUrl}?resize=${size}%2C${size}&ssl=1`;
+  }
+  
+  return url;
+};
+
 const fetchTopArticles = async (): Promise<EPCArticle[]> => {
   const response = await wpApi.get(`/posts?_embed&per_page=8`); // Get 8 most recent posts
   return response.data;
 };
 
-const handleGamePress = () => {
+const handleComingSoonPress = () => {
   Toast.show({
     type: 'info',
     text1: 'Coming Soon!',
@@ -118,7 +132,10 @@ export default function HomeScreen() {
   // Carousel loop setup
   const activeArticles = articles?.slice(0, 8) || [];
   const renderArticleCard = ({ item, index }: { item: EPCArticle; index: number }) => {
-    const thumbnailUrl = item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    // Intercept Jetpack URL and shrink to 900x900 for the home screen thumbnail
+    const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 900)
+      || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    
     // Conditionally use URL image or local fallback
     const headerImageSource = thumbnailUrl 
       ? { uri: thumbnailUrl } 
@@ -166,15 +183,12 @@ export default function HomeScreen() {
           />
           
           <Link href={{ pathname: '/article/[id]', params: { id: item.id } }} asChild>
-            <PressableRipple style={StyleSheet.absoluteFill}>
-              <View style={styles.cardContent}>
+            <PressableRipple style={StyleSheet.flatten([StyleSheet.absoluteFill, styles.cardContent])}>
                 <Text style={styles.title} numberOfLines={2}>{decode(item.title.rendered)}</Text>
                 
                 <View style={styles.bottomRow}>
                   <Text style={styles.category}>{classificationText}</Text>
                 </View>
-
-              </View>
             </PressableRipple>
           </Link>
           
@@ -261,49 +275,45 @@ export default function HomeScreen() {
         </View>          
 
         {/* Dynamic 'From The Archives' card */}
-        <View style={styles.cardMask}>
-          <PressableRipple style={styles.archivesCard}>
-            
-            <View style={styles.archivesTagRow}>
-              <Text style={styles.archivesTagText}>FROM THE ARCHIVES</Text>
-              <ExpanderIcon size={10} color={Colors.grey} /> 
-            </View>
-            
-            <Text style={styles.archivesQuote}>
-              “...a souvenir of the year that was ’92 and of the perennial phenomenon that is BITS...”
-            </Text>
-          </PressableRipple>
-        </View>
+        <PressableRipple style={styles.archivesCard} onPress={handleComingSoonPress}>
+          
+          <View style={styles.archivesTagRow}>
+            <Text style={styles.archivesTagText}>FROM THE ARCHIVES</Text>
+            <ExpanderIcon size={10} color={Colors.grey} /> 
+          </View>
+          
+          <Text style={styles.archivesQuote}>
+            “...a souvenir of the year that was ’92 and of the perennial phenomenon that is BITS...”
+          </Text>
+        </PressableRipple>
 
         {/* Games */}
-        <View style={styles.cardMask}>
-          <PressableRipple style={styles.gamesCard} onPress={handleGamePress}>
-            <View style={styles.gamesHeaderContainer}>
-              <Text style={styles.gamesTitle}>TOTALLY ORIGINAL GAMES</Text>
+        <PressableRipple style={styles.gamesCard} onPress={handleComingSoonPress}>
+          <View style={styles.gamesHeaderContainer}>
+            <Text style={styles.gamesTitle}>TOTALLY ORIGINAL GAMES</Text>
+          </View>
+          <View style={styles.gamesDivider} />
+          <View style={styles.gamesRow}>
+            {/* Game 1 - BITSian Words */}
+            <View style={styles.gameItem}>
+              <GamesWordleLogo size={60} style={styles.gamesIcon} />
+              <Text style={styles.gameLabel}>BITSian{'\n'}Words</Text>
             </View>
-            <View style={styles.gamesDivider} />
-            <View style={styles.gamesRow}>
-              {/* Game 1 - BITSian Words */}
-              <View style={styles.gameItem}>
-                <GamesWordleLogo size={60} style={styles.gamesIcon} />
-                <Text style={styles.gameLabel}>BITSian{'\n'}Words</Text>
-              </View>
-              
-              {/* Game 2 - Regular Sudoku */}
-              <View style={styles.gameItem}>
-                <GamesSudokuLogo size={60} style={styles.gamesIcon} />
-                <Text style={styles.gameLabel}>Regular{'\n'}Sudoku</Text>
-              </View>
-              
-              {/* Game 3 - BITSian Connect */}
-              <View style={styles.gameItem}>
-                <GamesConnectionsLogo size={60} style={styles.gamesIcon} />
-                <Text style={styles.gameLabel}>BITSian{'\n'}Connect</Text>
-              </View>
+            
+            {/* Game 2 - Regular Sudoku */}
+            <View style={styles.gameItem}>
+              <GamesSudokuLogo size={60} style={styles.gamesIcon} />
+              <Text style={styles.gameLabel}>Regular{'\n'}Sudoku</Text>
             </View>
+            
+            {/* Game 3 - BITSian Connect */}
+            <View style={styles.gameItem}>
+              <GamesConnectionsLogo size={60} style={styles.gamesIcon} />
+              <Text style={styles.gameLabel}>BITSian{'\n'}Connect</Text>
+            </View>
+          </View>
 
-          </PressableRipple>
-        </View>
+        </PressableRipple>
       </ScrollView>
     </SafeAreaView>
   );
@@ -361,7 +371,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill, // Stretch image to fill card
     width: undefined,
     height: undefined,
-    backgroundColor: Colors.lightgrey, 
+    backgroundColor: Colors.lightGrey, 
   },
   cardContent: {
     flex: 1, // Fill remaining space over image
@@ -379,11 +389,11 @@ const styles = StyleSheet.create({
   bottomRow: {
     flexDirection: 'row',
     width: '100%',
-    marginBottom: 4,
+    marginBottom: 0,
   },
   category: {
     fontSize: 14,
-    color: Colors.lightgrey,
+    color: Colors.lightGrey,
     fontFamily: 'Lato',
   },
   date: {
@@ -413,6 +423,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: Spacing.med,
     paddingHorizontal: Spacing.large,
+    marginHorizontal: Spacing.large,
+    marginVertical: Spacing.small,
   },
   archivesTagRow: {
     flexDirection: 'row',
@@ -436,10 +448,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.tint,
     borderRadius: 24,
     overflow: 'hidden', // Keep divider line inside the borders
-  },
-  cardMask: {
-    borderRadius: 24,
-    overflow: 'hidden',
     marginHorizontal: Spacing.large,
     marginVertical: Spacing.small,
   },

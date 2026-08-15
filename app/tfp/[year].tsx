@@ -14,6 +14,20 @@ import PressableRipple from '@/components/PressableRipple';
 import CalendarIcon from '@/components/icons/CalendarIcon';
 import EPCGraphic from '@/components/icons/EPCGraphic';
 
+// Force the Jetpack CDN to resize images on the edge server
+const optimiseJetpackUrl = (url: string | undefined, size: number) => {
+  if (!url) return null;
+  
+  // If it goes through the WP global CDN (i0.wp.com, i1.wp.com, etc.)
+  if (url.includes('.wp.com')) {
+    const baseUrl = url.split('?')[0]; // Strip the unnecessarily large ?fit params
+    // Use URL-encoded commas "%2C"
+    return `${baseUrl}?resize=${size}%2C${size}&ssl=1`;
+  }
+  
+  return url;
+};
+
 export default function TfpYearScreen() {
   const { year, issue } = useLocalSearchParams<{ year: string; issue?: string }>();
 
@@ -115,7 +129,7 @@ export default function TfpYearScreen() {
       // Included articles
       if (includedStr) {
         const extraResponse = await axios.get(
-          `https://epcbits.com/wp-json/wp/v2/posts?include=${includedStr}&_embed`
+          `https://epcbits.com/wp-json/wp/v2/posts?include=${includedStr}&_embed&per_page=100` // Without &per_page=100, WordPress API only returns 10 items in included/excluded list
         );
         
         // Prevent FlatList crashes by filtering out potential duplicate IDs
@@ -142,14 +156,33 @@ export default function TfpYearScreen() {
     : `Loading...`;
 
   // Helper to strip <p> tags WordPress wraps around excerpts
-  const cleanExcerpt = (htmlString: string) => {
+  const cleanExcerpt = (htmlString?: string) => {
+    if (!htmlString) return '';
+
+    // 1. Strip HTML tags
     const stripped = htmlString.replace(/(<([^>]+)>)/gi, "");
-    return decode(stripped).trim();
+    
+    // 2. Decode entities (turns &nbsp; into actual Unicode spaces)
+    const decoded = decode(stripped);
+    
+    // 3. AGGRESSIVE INVISIBLE CHARACTER PURGE
+    // React Native's engine often fails to trim() non-breaking spaces (\u00A0)
+    // We strip all spaces, tabs, newlines, and zero-width characters to test if it is truly empty
+    const pureText = decoded.replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '');
+    
+    // 4. Catch the artifacts
+    if (pureText === '' || pureText === '[&hellip;]' || pureText === '[...]') {
+      return '';
+    }
+    
+    // If it has real letters/text, return the normally trimmed version
+    return decoded.trim();
   };
 
   const renderArticleCard = ({ item }: { item: any }) => {
-    // Going into the _embedded object to find image URL
-    const thumbnailUrl = item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    // Intercept Jetpack URL and shrink to 200x200 for the 120x120 thumbnail, fallback to full size thumbnail
+    const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 200)
+      || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
     // Conditionally use URL image or local fallback
     const headerImageSource = thumbnailUrl 
       ? { uri: thumbnailUrl } 

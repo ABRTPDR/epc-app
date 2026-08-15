@@ -1,0 +1,1734 @@
+{
+  "@adobe/css-tools@4.5.0": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "@expo-google-fonts/material-symbols@0.4.38": {
+    "licenses": "MIT, Apache-2.0",
+    "publisher": "Expo Team"
+  },
+  "@expo/code-signing-certificates@0.0.6": {
+    "licenses": "MIT",
+    "publisher": "Expo"
+  },
+  "@expo/devcert@1.2.1": {
+    "licenses": "MIT",
+    "publisher": "Dave Wasmer"
+  },
+  "@expo/devtools@56.0.2": {
+    "licenses": "MIT"
+  },
+  "@expo/dom-webview@56.0.5": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "@expo/env@2.3.0": {
+    "licenses": "MIT"
+  },
+  "@expo/expo-modules-macros-plugin@0.0.9": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "@expo/fingerprint@0.19.3": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "@expo/inline-modules@0.0.10": {
+    "licenses": "MIT",
+    "publisher": "Expo"
+  },
+  "@expo/json-file@10.2.0": {
+    "licenses": "MIT"
+  },
+  "@expo/local-build-cache-provider@56.0.8": {
+    "licenses": "MIT"
+  },
+  "@expo/log-box@56.0.12": {
+    "licenses": "MIT",
+    "publisher": "Expo"
+  },
+  "@expo/osascript@2.6.0": {
+    "licenses": "MIT"
+  },
+  "@expo/package-manager@1.12.1": {
+    "licenses": "MIT"
+  },
+  "@expo/plist@0.7.0": {
+    "licenses": "MIT"
+  },
+  "@expo/prebuild-config@56.0.14": {
+    "licenses": "MIT"
+  },
+  "@expo/router-server@56.0.12": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "@expo/sdk-runtime-versions@1.0.0": {
+    "licenses": "MIT",
+    "publisher": "Expo"
+  },
+  "@expo/spawn-async@1.8.0": {
+    "licenses": "MIT",
+    "publisher": "Expo"
+  },
+  "@expo/sudo-prompt@9.3.2": {
+    "licenses": "MIT",
+    "publisher": "Joran Dirk Greef"
+  },
+  "@expo/ui@56.0.15": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "@expo/ws-tunnel@1.0.6": {
+    "licenses": "MIT"
+  },
+  "@isaacs/ttlcache@1.4.1": {
+    "licenses": "ISC",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "@jridgewell/gen-mapping@0.3.13": {
+    "licenses": "MIT",
+    "publisher": "Justin Ridgewell"
+  },
+  "@jridgewell/remapping@2.3.5": {
+    "licenses": "MIT",
+    "publisher": "Justin Ridgewell"
+  },
+  "@jridgewell/resolve-uri@3.1.2": {
+    "licenses": "MIT",
+    "publisher": "Justin Ridgewell"
+  },
+  "@jridgewell/source-map@0.3.11": {
+    "licenses": "MIT",
+    "publisher": "Justin Ridgewell"
+  },
+  "@jridgewell/sourcemap-codec@1.5.5": {
+    "licenses": "MIT",
+    "publisher": "Justin Ridgewell"
+  },
+  "@jridgewell/trace-mapping@0.3.31": {
+    "licenses": "MIT",
+    "publisher": "Justin Ridgewell"
+  },
+  "@jsamr/counter-style@2.0.2": {
+    "licenses": "MIT",
+    "publisher": "Jules Sam. Randolph"
+  },
+  "@jsamr/react-native-li@2.3.1": {
+    "licenses": "MIT",
+    "publisher": "Jules Sam. Randolph"
+  },
+  "@native-html/css-processor@1.11.0": {
+    "licenses": "MIT",
+    "publisher": "Jules Sam. Randolph"
+  },
+  "@native-html/transient-render-engine@11.2.3": {
+    "licenses": "MIT",
+    "publisher": "Jules Sam. Randolph"
+  },
+  "@radix-ui/primitive@1.1.3": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-collection@1.1.7": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-compose-refs@1.1.2": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-context@1.1.2": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-dialog@1.1.15": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-direction@1.1.1": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-dismissable-layer@1.1.11": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-focus-guards@1.1.3": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-focus-scope@1.1.7": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-id@1.1.1": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-portal@1.1.9": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-presence@1.1.5": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-primitive@2.1.3": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-roving-focus@1.1.11": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-slot@1.2.3": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-slot@1.2.4": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-tabs@1.1.13": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-use-callback-ref@1.1.1": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-use-controllable-state@1.2.2": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-use-effect-event@0.0.2": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-use-escape-keydown@1.1.1": {
+    "licenses": "MIT"
+  },
+  "@radix-ui/react-use-layout-effect@1.1.1": {
+    "licenses": "MIT"
+  },
+  "@react-native-masked-view/masked-view@0.3.2": {
+    "licenses": "MIT",
+    "publisher": "Mike Nedosekin"
+  },
+  "@react-native/assets-registry@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@react-native/codegen@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@react-native/debugger-frontend@0.85.3": {
+    "licenses": "BSD-3-Clause"
+  },
+  "@react-native/debugger-shell@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@react-native/dev-middleware@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@react-native/gradle-plugin@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@react-native/js-polyfills@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@react-native/normalize-colors@0.74.89": {
+    "licenses": "MIT"
+  },
+  "@react-native/normalize-colors@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@react-native/virtualized-lists@0.72.8": {
+    "licenses": "MIT"
+  },
+  "@react-native/virtualized-lists@0.85.3": {
+    "licenses": "MIT"
+  },
+  "@sinclair/typebox@0.27.10": {
+    "licenses": "MIT",
+    "publisher": "sinclairzx81"
+  },
+  "@tanstack/query-core@5.101.0": {
+    "licenses": "MIT",
+    "publisher": "tannerlinsley"
+  },
+  "@tanstack/react-query@5.101.0": {
+    "licenses": "MIT",
+    "publisher": "tannerlinsley"
+  },
+  "@types/aria-query@5.0.4": {
+    "licenses": "MIT"
+  },
+  "@types/istanbul-lib-coverage@2.0.6": {
+    "licenses": "MIT"
+  },
+  "@types/istanbul-lib-report@3.0.3": {
+    "licenses": "MIT"
+  },
+  "@types/istanbul-reports@3.0.4": {
+    "licenses": "MIT"
+  },
+  "@types/node@25.9.1": {
+    "licenses": "MIT"
+  },
+  "@types/ramda@0.27.66": {
+    "licenses": "MIT"
+  },
+  "@types/react-native@0.72.8": {
+    "licenses": "MIT"
+  },
+  "@types/react-test-renderer@19.1.0": {
+    "licenses": "MIT"
+  },
+  "@types/react@19.2.16": {
+    "licenses": "MIT"
+  },
+  "@types/urijs@1.19.26": {
+    "licenses": "MIT"
+  },
+  "@types/yargs-parser@21.0.3": {
+    "licenses": "MIT"
+  },
+  "@types/yargs@17.0.35": {
+    "licenses": "MIT"
+  },
+  "@ungap/structured-clone@1.3.1": {
+    "licenses": "ISC",
+    "publisher": "Andrea Giammarchi"
+  },
+  "@xmldom/xmldom@0.8.13": {
+    "licenses": "MIT"
+  },
+  "@xmldom/xmldom@0.9.10": {
+    "licenses": "MIT"
+  },
+  "abort-controller@3.0.0": {
+    "licenses": "MIT",
+    "publisher": "Toru Nagashima"
+  },
+  "accepts@1.3.8": {
+    "licenses": "MIT"
+  },
+  "accepts@2.0.0": {
+    "licenses": "MIT"
+  },
+  "acorn@8.16.0": {
+    "licenses": "MIT"
+  },
+  "agent-base@6.0.2": {
+    "licenses": "MIT",
+    "publisher": "Nathan Rajlich"
+  },
+  "agent-base@7.1.4": {
+    "licenses": "MIT",
+    "publisher": "Nathan Rajlich"
+  },
+  "anser@1.4.10": {
+    "licenses": "MIT",
+    "publisher": "Ionică Bizău"
+  },
+  "aria-hidden@1.2.6": {
+    "licenses": "MIT",
+    "publisher": "Anton Korzunov"
+  },
+  "aria-query@5.3.0": {
+    "licenses": "Apache-2.0",
+    "publisher": "Jesse Beach"
+  },
+  "asap@2.0.6": {
+    "licenses": "MIT"
+  },
+  "asynckit@0.4.0": {
+    "licenses": "MIT",
+    "publisher": "Alex Indigo"
+  },
+  "axios@1.17.0": {
+    "licenses": "MIT",
+    "publisher": "Matt Zabriskie"
+  },
+  "balanced-match@4.0.4": {
+    "licenses": "MIT"
+  },
+  "base64-js@1.5.1": {
+    "licenses": "MIT",
+    "publisher": "T. Jameson Little"
+  },
+  "baseline-browser-mapping@2.10.33": {
+    "licenses": "Apache-2.0"
+  },
+  "big-integer@1.6.52": {
+    "licenses": "Unlicense",
+    "publisher": "Peter Olson"
+  },
+  "boolbase@1.0.0": {
+    "licenses": "ISC",
+    "publisher": "Felix Boehm"
+  },
+  "bplist-creator@0.1.0": {
+    "licenses": "MIT",
+    "publisher": "Joe Ferner"
+  },
+  "bplist-parser@0.3.1": {
+    "licenses": "MIT",
+    "publisher": "Joe Ferner"
+  },
+  "brace-expansion@5.0.6": {
+    "licenses": "MIT"
+  },
+  "braces@3.0.3": {
+    "licenses": "MIT",
+    "publisher": "Jon Schlinkert"
+  },
+  "browserslist@4.28.2": {
+    "licenses": "MIT",
+    "publisher": "Andrey Sitnik"
+  },
+  "bser@2.1.1": {
+    "licenses": "Apache-2.0",
+    "publisher": "Wez Furlong"
+  },
+  "buffer-from@1.1.2": {
+    "licenses": "MIT"
+  },
+  "bytes@3.1.2": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "call-bind-apply-helpers@1.0.2": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "camelcase@6.3.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "camelize@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "James Halliday"
+  },
+  "caniuse-lite@1.0.30001793": {
+    "licenses": "CC-BY-4.0",
+    "publisher": "Ben Briggs"
+  },
+  "character-entities-html4@1.1.4": {
+    "licenses": "MIT",
+    "publisher": "Titus Wormer"
+  },
+  "character-entities-legacy@1.1.4": {
+    "licenses": "MIT",
+    "publisher": "Titus Wormer"
+  },
+  "chrome-launcher@0.15.2": {
+    "licenses": "Apache-2.0",
+    "publisher": "The Chromium Authors"
+  },
+  "chromium-edge-launcher@0.3.0": {
+    "licenses": "Apache-2.0",
+    "publisher": "Cezar Augusto"
+  },
+  "ci-info@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Thomas Watson Steen"
+  },
+  "ci-info@3.9.0": {
+    "licenses": "MIT",
+    "publisher": "Thomas Watson Steen"
+  },
+  "client-only@0.0.1": {
+    "licenses": "MIT"
+  },
+  "clone@1.0.4": {
+    "licenses": "MIT",
+    "publisher": "Paul Vorbach"
+  },
+  "color-string@1.9.1": {
+    "licenses": "MIT",
+    "publisher": "Heather Arthur"
+  },
+  "color@4.2.3": {
+    "licenses": "MIT"
+  },
+  "combined-stream@1.0.8": {
+    "licenses": "MIT",
+    "publisher": "Felix Geisendörfer"
+  },
+  "compressible@2.0.18": {
+    "licenses": "MIT"
+  },
+  "compression@1.8.1": {
+    "licenses": "MIT"
+  },
+  "connect@3.7.0": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "convert-source-map@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Thorsten Lorenz"
+  },
+  "core-js-compat@3.49.0": {
+    "licenses": "MIT",
+    "publisher": "Denis Pushkarev"
+  },
+  "cross-fetch@3.2.0": {
+    "licenses": "MIT",
+    "publisher": "Leonardo Quixada"
+  },
+  "cross-spawn@7.0.6": {
+    "licenses": "MIT",
+    "publisher": "André Cruz"
+  },
+  "css-color-keywords@1.0.0": {
+    "licenses": "ISC",
+    "publisher": "Jakob Krigovsky"
+  },
+  "css-in-js-utils@3.1.0": {
+    "licenses": "MIT",
+    "publisher": "robinweser"
+  },
+  "css-select@5.2.2": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "css-to-react-native@3.2.0": {
+    "licenses": "MIT",
+    "publisher": "Jacob Parker"
+  },
+  "css-tree@1.1.3": {
+    "licenses": "MIT",
+    "publisher": "Roman Dvornov"
+  },
+  "css-what@6.2.2": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Böhm"
+  },
+  "css.escape@1.5.1": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "csstype@3.2.3": {
+    "licenses": "MIT",
+    "publisher": "Fredrik Nicol"
+  },
+  "debug@2.6.9": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "debug@3.2.7": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "debug@4.4.3": {
+    "licenses": "MIT",
+    "publisher": "Josh Junon"
+  },
+  "decode-uri-component@0.2.2": {
+    "licenses": "MIT",
+    "publisher": "Sam Verschueren"
+  },
+  "deepmerge@4.3.1": {
+    "licenses": "MIT"
+  },
+  "defaults@1.0.4": {
+    "licenses": "MIT",
+    "publisher": "Elijah Insua"
+  },
+  "delayed-stream@1.0.0": {
+    "licenses": "MIT",
+    "publisher": "Felix Geisendörfer"
+  },
+  "depd@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Douglas Christopher Wilson"
+  },
+  "dequal@2.0.3": {
+    "licenses": "MIT",
+    "publisher": "Luke Edwards"
+  },
+  "destroy@1.2.0": {
+    "licenses": "MIT",
+    "publisher": "Jonathan Ong"
+  },
+  "detect-libc@2.1.2": {
+    "licenses": "Apache-2.0",
+    "publisher": "Lovell Fuller"
+  },
+  "detect-node-es@1.1.0": {
+    "licenses": "MIT",
+    "publisher": "Ilya Kantor"
+  },
+  "dnssd-advertise@1.1.4": {
+    "licenses": "MIT",
+    "publisher": "Phil Pluckthun"
+  },
+  "dom-accessibility-api@0.5.16": {
+    "licenses": "MIT"
+  },
+  "dom-accessibility-api@0.6.3": {
+    "licenses": "MIT"
+  },
+  "dom-serializer@1.4.1": {
+    "licenses": "MIT",
+    "publisher": "Felix Boehm"
+  },
+  "dom-serializer@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Felix Boehm"
+  },
+  "domelementtype@2.3.0": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "domhandler@4.3.1": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "domhandler@5.0.3": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "domutils@2.8.0": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "domutils@3.2.2": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "dunder-proto@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "ee-first@1.1.1": {
+    "licenses": "MIT",
+    "publisher": "Jonathan Ong"
+  },
+  "electron-to-chromium@1.5.366": {
+    "licenses": "ISC",
+    "publisher": "Kilian Valkhof"
+  },
+  "emoji-regex@8.0.0": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "entities@2.2.0": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "entities@3.0.1": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "entities@4.5.0": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "epc-app@0.1.0": {
+    "licenses": "UNLICENSED",
+    "private": true
+  },
+  "error-stack-parser@2.1.4": {
+    "licenses": "MIT"
+  },
+  "es-define-property@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "es-errors@1.3.0": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "es-object-atoms@1.1.2": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "es-set-tostringtag@2.1.0": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "escalade@3.2.0": {
+    "licenses": "MIT",
+    "publisher": "Luke Edwards"
+  },
+  "escape-html@1.0.3": {
+    "licenses": "MIT"
+  },
+  "escape-string-regexp@1.0.5": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "escape-string-regexp@4.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "etag@1.8.1": {
+    "licenses": "MIT"
+  },
+  "event-target-shim@5.0.1": {
+    "licenses": "MIT",
+    "publisher": "Toru Nagashima"
+  },
+  "expo-asset@56.0.15": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-blur@56.0.3": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-constants@56.0.16": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-file-system@56.0.7": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-font@56.0.5": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-glass-effect@56.0.4": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-image@56.0.11": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-keep-awake@56.0.3": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-linear-gradient@56.0.4": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-linking@56.0.13": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-modules-autolinking@56.0.14": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-modules-core@56.0.14": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-modules-jsi@56.0.7": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-router@56.2.8": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-server@56.0.4": {
+    "licenses": "MIT"
+  },
+  "expo-splash-screen@56.0.10": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-status-bar@56.0.4": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-symbols@56.0.5": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo-web-browser@56.0.5": {
+    "licenses": "MIT",
+    "publisher": "650 Industries, Inc."
+  },
+  "expo@56.0.8": {
+    "licenses": "MIT",
+    "publisher": "Expo"
+  },
+  "exponential-backoff@3.1.3": {
+    "licenses": "Apache-2.0",
+    "publisher": "Sami Sayegh"
+  },
+  "fast-deep-equal@3.1.3": {
+    "licenses": "MIT",
+    "publisher": "Evgeny Poberezkin"
+  },
+  "fb-dotslash@0.5.8": {
+    "licenses": "(MIT OR Apache-2.0)"
+  },
+  "fb-watchman@2.0.2": {
+    "licenses": "Apache-2.0",
+    "publisher": "Wez Furlong"
+  },
+  "fbjs-css-vars@1.0.2": {
+    "licenses": "MIT"
+  },
+  "fbjs@3.0.5": {
+    "licenses": "MIT"
+  },
+  "fdir@6.5.0": {
+    "licenses": "MIT",
+    "publisher": "thecodrr"
+  },
+  "fetch-nodeshim@0.4.10": {
+    "licenses": "MIT",
+    "publisher": "Phil Pluckthun"
+  },
+  "fill-range@7.1.1": {
+    "licenses": "MIT",
+    "publisher": "Jon Schlinkert"
+  },
+  "filter-obj@1.1.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "finalhandler@1.1.2": {
+    "licenses": "MIT",
+    "publisher": "Douglas Christopher Wilson"
+  },
+  "flow-enums-runtime@0.0.6": {
+    "licenses": "MIT"
+  },
+  "follow-redirects@1.16.0": {
+    "licenses": "MIT",
+    "publisher": "Ruben Verborgh"
+  },
+  "fontfaceobserver@2.3.0": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Bram Stein"
+  },
+  "form-data@4.0.5": {
+    "licenses": "MIT",
+    "publisher": "Felix Geisendörfer"
+  },
+  "fresh@0.5.2": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "function-bind@1.1.2": {
+    "licenses": "MIT",
+    "publisher": "Raynos"
+  },
+  "gensync@1.0.0-beta.2": {
+    "licenses": "MIT",
+    "publisher": "Logan Smyth"
+  },
+  "get-caller-file@2.0.5": {
+    "licenses": "ISC",
+    "publisher": "Stefan Penner"
+  },
+  "get-intrinsic@1.3.0": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "get-nonce@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Anton Korzunov"
+  },
+  "get-proto@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "getenv@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Christoph Tavan"
+  },
+  "glob@13.0.6": {
+    "licenses": "BlueOak-1.0.0",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "gopd@1.2.0": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "graceful-fs@4.2.11": {
+    "licenses": "ISC"
+  },
+  "has-flag@3.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "has-flag@4.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "has-symbols@1.1.0": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "has-tostringtag@1.0.2": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "hasown@2.0.4": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "hosted-git-info@7.0.2": {
+    "licenses": "ISC",
+    "publisher": "GitHub Inc."
+  },
+  "html-entities@2.6.0": {
+    "licenses": "MIT",
+    "publisher": "Marat Dulin"
+  },
+  "htmlparser2@7.2.0": {
+    "licenses": "MIT",
+    "publisher": "Felix Boehm"
+  },
+  "http-errors@2.0.1": {
+    "licenses": "MIT",
+    "publisher": "Jonathan Ong"
+  },
+  "https-proxy-agent@5.0.1": {
+    "licenses": "MIT",
+    "publisher": "Nathan Rajlich"
+  },
+  "https-proxy-agent@7.0.6": {
+    "licenses": "MIT",
+    "publisher": "Nathan Rajlich"
+  },
+  "hyphenate-style-name@1.1.0": {
+    "licenses": "BSD-3-Clause",
+    "publisher": "Espen Hovlandsdal"
+  },
+  "ignore@5.3.2": {
+    "licenses": "MIT",
+    "publisher": "kael"
+  },
+  "image-size@1.2.1": {
+    "licenses": "MIT",
+    "publisher": "netroy"
+  },
+  "indent-string@4.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "inherits@2.0.4": {
+    "licenses": "ISC"
+  },
+  "inline-style-prefixer@7.0.1": {
+    "licenses": "MIT",
+    "publisher": "Robin Weser"
+  },
+  "invariant@2.2.4": {
+    "licenses": "MIT",
+    "publisher": "Andres Suarez"
+  },
+  "is-arrayish@0.3.4": {
+    "licenses": "MIT",
+    "publisher": "Qix"
+  },
+  "is-core-module@2.16.2": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "is-docker@2.2.1": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "is-fullwidth-code-point@3.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "is-number@7.0.0": {
+    "licenses": "MIT",
+    "publisher": "Jon Schlinkert"
+  },
+  "is-wsl@2.2.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "isexe@2.0.0": {
+    "licenses": "ISC",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "jimp-compact@0.16.1": {
+    "licenses": "MIT"
+  },
+  "js-tokens@4.0.0": {
+    "licenses": "MIT",
+    "publisher": "Simon Lydell"
+  },
+  "js-yaml@4.2.0": {
+    "licenses": "MIT",
+    "publisher": "Vladimir Zapparov"
+  },
+  "jsesc@3.1.0": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "json5@2.2.3": {
+    "licenses": "MIT",
+    "publisher": "Aseem Kishore"
+  },
+  "lan-network@0.2.1": {
+    "licenses": "MIT",
+    "publisher": "Phil Pluckthun"
+  },
+  "leven@3.1.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "lighthouse-logger@1.4.2": {
+    "licenses": "Apache-2.0"
+  },
+  "lightningcss@1.32.0": {
+    "licenses": "MPL-2.0"
+  },
+  "lodash.debounce@4.0.8": {
+    "licenses": "MIT",
+    "publisher": "John-David Dalton"
+  },
+  "lodash.throttle@4.1.1": {
+    "licenses": "MIT",
+    "publisher": "John-David Dalton"
+  },
+  "loose-envify@1.4.0": {
+    "licenses": "MIT",
+    "publisher": "Andres Suarez"
+  },
+  "lru-cache@10.4.3": {
+    "licenses": "ISC",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "lru-cache@11.5.1": {
+    "licenses": "BlueOak-1.0.0",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "lru-cache@5.1.1": {
+    "licenses": "ISC",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "lz-string@1.5.0": {
+    "licenses": "MIT",
+    "publisher": "pieroxy"
+  },
+  "makeerror@1.0.12": {
+    "licenses": "BSD-3-Clause",
+    "publisher": "Naitik Shah"
+  },
+  "marky@1.3.0": {
+    "licenses": "Apache-2.0",
+    "publisher": "Nolan Lawson"
+  },
+  "math-intrinsics@1.1.0": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "mdn-data@2.0.14": {
+    "licenses": "CC0-1.0",
+    "publisher": "Mozilla Developer Network"
+  },
+  "memoize-one@5.2.1": {
+    "licenses": "MIT",
+    "publisher": "Alex Reardon"
+  },
+  "memoize-one@6.0.0": {
+    "licenses": "MIT",
+    "publisher": "Alex Reardon"
+  },
+  "merge-stream@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Stephen Sugden"
+  },
+  "micromatch@4.0.8": {
+    "licenses": "MIT",
+    "publisher": "Jon Schlinkert"
+  },
+  "mime-db@1.52.0": {
+    "licenses": "MIT"
+  },
+  "mime-db@1.54.0": {
+    "licenses": "MIT"
+  },
+  "mime-types@2.1.35": {
+    "licenses": "MIT"
+  },
+  "mime-types@3.0.2": {
+    "licenses": "MIT"
+  },
+  "mime@1.6.0": {
+    "licenses": "MIT",
+    "publisher": "Robert Kieffer"
+  },
+  "mimic-fn@1.2.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "min-indent@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "James Kyle"
+  },
+  "minimatch@10.2.5": {
+    "licenses": "BlueOak-1.0.0",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "minipass@7.1.3": {
+    "licenses": "BlueOak-1.0.0",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "mkdirp@1.0.4": {
+    "licenses": "MIT"
+  },
+  "ms@2.0.0": {
+    "licenses": "MIT"
+  },
+  "ms@2.1.3": {
+    "licenses": "MIT"
+  },
+  "msgpackr-extract@3.0.4": {
+    "licenses": "MIT",
+    "publisher": "Kris Zyp"
+  },
+  "msgpackr@2.0.2": {
+    "licenses": "MIT",
+    "publisher": "Kris Zyp"
+  },
+  "multitars@1.0.0": {
+    "licenses": "MIT",
+    "publisher": "Phil Pluckthun"
+  },
+  "nanoid@3.3.12": {
+    "licenses": "MIT",
+    "publisher": "Andrey Sitnik"
+  },
+  "negotiator@0.6.3": {
+    "licenses": "MIT"
+  },
+  "negotiator@0.6.4": {
+    "licenses": "MIT"
+  },
+  "negotiator@1.0.0": {
+    "licenses": "MIT"
+  },
+  "node-fetch@2.7.0": {
+    "licenses": "MIT",
+    "publisher": "David Frank"
+  },
+  "node-forge@1.4.0": {
+    "licenses": "(BSD-3-Clause OR GPL-2.0)",
+    "publisher": "Digital Bazaar, Inc."
+  },
+  "node-gyp-build-optional-packages@5.2.2": {
+    "licenses": "MIT",
+    "publisher": "Mathias Buus"
+  },
+  "node-int64@0.4.0": {
+    "licenses": "MIT",
+    "publisher": "Robert Kieffer"
+  },
+  "node-releases@2.0.47": {
+    "licenses": "MIT",
+    "publisher": "Sergey Rubanov"
+  },
+  "npm-package-arg@11.0.3": {
+    "licenses": "ISC",
+    "publisher": "GitHub Inc."
+  },
+  "nth-check@2.1.1": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Felix Boehm"
+  },
+  "nullthrows@1.1.1": {
+    "licenses": "MIT",
+    "publisher": "Andres Suarez"
+  },
+  "ob1@0.84.4": {
+    "licenses": "MIT"
+  },
+  "object-assign@4.1.1": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "on-finished@2.3.0": {
+    "licenses": "MIT"
+  },
+  "on-finished@2.4.1": {
+    "licenses": "MIT"
+  },
+  "on-headers@1.1.0": {
+    "licenses": "MIT",
+    "publisher": "Douglas Christopher Wilson"
+  },
+  "onetime@2.0.1": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "open@7.4.2": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "parse-png@2.1.0": {
+    "licenses": "MIT",
+    "publisher": "Kevin Martensson"
+  },
+  "path-key@3.1.1": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "path-parse@1.0.7": {
+    "licenses": "MIT",
+    "publisher": "Javier Blanco"
+  },
+  "path-scurry@2.0.2": {
+    "licenses": "BlueOak-1.0.0",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "picomatch@2.3.2": {
+    "licenses": "MIT",
+    "publisher": "Jon Schlinkert"
+  },
+  "picomatch@4.0.4": {
+    "licenses": "MIT",
+    "publisher": "Jon Schlinkert"
+  },
+  "plist@3.1.1": {
+    "licenses": "MIT",
+    "publisher": "Nathan Rajlich"
+  },
+  "pngjs@3.4.0": {
+    "licenses": "MIT"
+  },
+  "postcss-value-parser@4.2.0": {
+    "licenses": "MIT",
+    "publisher": "Bogdan Chadkin"
+  },
+  "postcss@8.5.15": {
+    "licenses": "MIT",
+    "publisher": "Andrey Sitnik"
+  },
+  "pretty-format@27.5.1": {
+    "licenses": "MIT",
+    "publisher": "James Kyle"
+  },
+  "pretty-format@29.7.0": {
+    "licenses": "MIT",
+    "publisher": "James Kyle"
+  },
+  "proc-log@4.2.0": {
+    "licenses": "ISC",
+    "publisher": "GitHub Inc."
+  },
+  "promise@7.3.1": {
+    "licenses": "MIT",
+    "publisher": "ForbesLindesay"
+  },
+  "promise@8.3.0": {
+    "licenses": "MIT",
+    "publisher": "ForbesLindesay"
+  },
+  "prop-types@15.8.1": {
+    "licenses": "MIT"
+  },
+  "proxy-from-env@2.1.0": {
+    "licenses": "MIT",
+    "publisher": "Rob Wu"
+  },
+  "query-string@7.1.3": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "queue@6.0.2": {
+    "licenses": "MIT",
+    "publisher": "Jesse Tane"
+  },
+  "ramda@0.27.2": {
+    "licenses": "MIT",
+    "publisher": "Scott Sauyet"
+  },
+  "range-parser@1.2.1": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "react-devtools-core@6.1.5": {
+    "licenses": "MIT"
+  },
+  "react-dom@19.2.3": {
+    "licenses": "MIT"
+  },
+  "react-fast-compare@3.2.2": {
+    "licenses": "MIT",
+    "publisher": "Chris Bolin"
+  },
+  "react-freeze@1.0.4": {
+    "licenses": "MIT"
+  },
+  "react-is@16.13.1": {
+    "licenses": "MIT"
+  },
+  "react-is@17.0.2": {
+    "licenses": "MIT"
+  },
+  "react-is@18.3.1": {
+    "licenses": "MIT"
+  },
+  "react-is@19.2.7": {
+    "licenses": "MIT"
+  },
+  "react-native-drawer-layout@4.2.4": {
+    "licenses": "MIT"
+  },
+  "react-native-gesture-handler@3.0.0": {
+    "licenses": "MIT",
+    "publisher": "Krzysztof Magiera"
+  },
+  "react-native-is-edge-to-edge@1.3.1": {
+    "licenses": "MIT",
+    "publisher": "Mathieu Acthernoene"
+  },
+  "react-native-reanimated@4.3.1": {
+    "licenses": "MIT",
+    "publisher": "Krzysztof Magiera"
+  },
+  "react-native-render-html@6.3.4": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Meliorence"
+  },
+  "react-native-safe-area-context@5.7.0": {
+    "licenses": "MIT",
+    "publisher": "Janic Duplessis"
+  },
+  "react-native-screens@4.25.2": {
+    "licenses": "MIT",
+    "publisher": "Krzysztof Magiera"
+  },
+  "react-native-svg@15.15.4": {
+    "licenses": "MIT"
+  },
+  "react-native-toast-message@2.3.3": {
+    "licenses": "MIT",
+    "publisher": "Calin Tamas"
+  },
+  "react-native-web@0.21.2": {
+    "licenses": "MIT",
+    "publisher": "Nicolas Gallagher"
+  },
+  "react-native-webview@13.16.1": {
+    "licenses": "MIT",
+    "publisher": "Jamon Holmgren"
+  },
+  "react-native-worklets@0.8.3": {
+    "licenses": "MIT"
+  },
+  "react-native@0.85.3": {
+    "licenses": "MIT"
+  },
+  "react-refresh@0.14.2": {
+    "licenses": "MIT"
+  },
+  "react-remove-scroll-bar@2.3.8": {
+    "licenses": "MIT",
+    "publisher": "Anton Korzunov"
+  },
+  "react-remove-scroll@2.7.2": {
+    "licenses": "MIT",
+    "publisher": "Anton Korzunov"
+  },
+  "react-style-singleton@2.2.3": {
+    "licenses": "MIT",
+    "publisher": "Anton Korzunov"
+  },
+  "react@19.2.3": {
+    "licenses": "MIT"
+  },
+  "redent@3.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "regenerate-unicode-properties@10.2.2": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "regenerate@1.4.2": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "regenerator-runtime@0.13.11": {
+    "licenses": "MIT",
+    "publisher": "Ben Newman"
+  },
+  "regexpu-core@6.4.0": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "regjsgen@0.8.0": {
+    "licenses": "MIT",
+    "publisher": "Benjamin Tan"
+  },
+  "regjsparser@0.13.1": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "'Julian Viereck'"
+  },
+  "require-directory@2.1.1": {
+    "licenses": "MIT",
+    "publisher": "Troy Goode"
+  },
+  "resolve-from@5.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "resolve-workspace-root@2.0.1": {
+    "licenses": "MIT",
+    "publisher": "Cedric van Putten"
+  },
+  "resolve@1.22.12": {
+    "licenses": "MIT",
+    "publisher": "James Halliday"
+  },
+  "restore-cursor@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "safe-buffer@5.2.1": {
+    "licenses": "MIT",
+    "publisher": "Feross Aboukhadijeh"
+  },
+  "sax@1.6.0": {
+    "licenses": "BlueOak-1.0.0",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "scheduler@0.27.0": {
+    "licenses": "MIT"
+  },
+  "semver@6.3.1": {
+    "licenses": "ISC",
+    "publisher": "GitHub Inc."
+  },
+  "semver@7.8.1": {
+    "licenses": "ISC",
+    "publisher": "GitHub Inc."
+  },
+  "send@0.19.2": {
+    "licenses": "MIT",
+    "publisher": "TJ Holowaychuk"
+  },
+  "serialize-error@2.1.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "serve-static@1.16.3": {
+    "licenses": "MIT",
+    "publisher": "Douglas Christopher Wilson"
+  },
+  "server-only@0.0.1": {
+    "licenses": "MIT"
+  },
+  "setimmediate@1.0.5": {
+    "licenses": "MIT",
+    "publisher": "YuzuJS"
+  },
+  "setprototypeof@1.2.0": {
+    "licenses": "ISC",
+    "publisher": "Wes Todd"
+  },
+  "sf-symbols-typescript@2.2.0": {
+    "licenses": "MIT",
+    "publisher": "Fernando Rojo"
+  },
+  "shallowequal@1.1.0": {
+    "licenses": "MIT",
+    "publisher": "Alberto Leal"
+  },
+  "shebang-command@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Kevin Mårtensson"
+  },
+  "shebang-regex@3.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "shell-quote@1.8.4": {
+    "licenses": "MIT",
+    "publisher": "James Halliday"
+  },
+  "signal-exit@3.0.7": {
+    "licenses": "ISC",
+    "publisher": "Ben Coe"
+  },
+  "simple-plist@1.3.1": {
+    "licenses": "MIT",
+    "publisher": "Joe Wollard"
+  },
+  "simple-swizzle@0.2.4": {
+    "licenses": "MIT",
+    "publisher": "Qix"
+  },
+  "sisteransi@1.0.5": {
+    "licenses": "MIT",
+    "publisher": "Terkel Gjervig"
+  },
+  "slugify@1.6.9": {
+    "licenses": "MIT",
+    "publisher": "Simeon Velichkov"
+  },
+  "source-map-js@1.2.1": {
+    "licenses": "BSD-3-Clause",
+    "publisher": "Valentin 7rulnik Semirulnik"
+  },
+  "source-map-support@0.5.21": {
+    "licenses": "MIT"
+  },
+  "source-map@0.5.7": {
+    "licenses": "BSD-3-Clause",
+    "publisher": "Nick Fitzgerald"
+  },
+  "source-map@0.6.1": {
+    "licenses": "BSD-3-Clause",
+    "publisher": "Nick Fitzgerald"
+  },
+  "split-on-first@1.1.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "stackframe@1.3.4": {
+    "licenses": "MIT"
+  },
+  "stacktrace-parser@0.1.11": {
+    "licenses": "MIT",
+    "publisher": "Georg Tavonius"
+  },
+  "statuses@1.5.0": {
+    "licenses": "MIT"
+  },
+  "statuses@2.0.2": {
+    "licenses": "MIT"
+  },
+  "stream-buffers@2.2.0": {
+    "licenses": "Unlicense",
+    "publisher": "Sam Day"
+  },
+  "strict-uri-encode@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Kevin Mårtensson"
+  },
+  "string-width@4.2.3": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "stringify-entities@3.1.0": {
+    "licenses": "MIT",
+    "publisher": "Titus Wormer"
+  },
+  "strip-ansi@5.2.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "strip-ansi@6.0.1": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "strip-indent@3.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "structured-headers@0.4.1": {
+    "licenses": "MIT",
+    "publisher": "Evert Pot"
+  },
+  "styleq@0.1.3": {
+    "licenses": "MIT",
+    "publisher": "Nicolas Gallagher"
+  },
+  "supports-color@5.5.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "supports-color@7.2.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "supports-color@8.1.1": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "supports-hyperlinks@2.3.0": {
+    "licenses": "MIT",
+    "publisher": "James Talmage"
+  },
+  "supports-preserve-symlinks-flag@1.0.0": {
+    "licenses": "MIT",
+    "publisher": "Jordan Harband"
+  },
+  "terminal-link@2.1.1": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "terser@5.48.0": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Mihai Bazon"
+  },
+  "throat@5.0.0": {
+    "licenses": "MIT",
+    "publisher": "ForbesLindesay"
+  },
+  "tinyglobby@0.2.17": {
+    "licenses": "MIT",
+    "publisher": "Superchupu"
+  },
+  "tmpl@1.0.5": {
+    "licenses": "BSD-3-Clause",
+    "publisher": "Naitik Shah"
+  },
+  "to-regex-range@5.0.1": {
+    "licenses": "MIT",
+    "publisher": "Jon Schlinkert"
+  },
+  "toidentifier@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Douglas Christopher Wilson"
+  },
+  "toqr@0.1.1": {
+    "licenses": "MIT",
+    "publisher": "Phil Pluckthun"
+  },
+  "tr46@0.0.3": {
+    "licenses": "MIT",
+    "publisher": "Sebastian Mayr"
+  },
+  "ts-toolbelt@6.15.5": {
+    "licenses": "Apache-2.0",
+    "publisher": "Pierre-Antoine Mills"
+  },
+  "tslib@2.8.1": {
+    "licenses": "0BSD",
+    "publisher": "Microsoft Corp."
+  },
+  "type-fest@0.21.3": {
+    "licenses": "(MIT OR CC0-1.0)",
+    "publisher": "Sindre Sorhus"
+  },
+  "type-fest@0.7.1": {
+    "licenses": "(MIT OR CC0-1.0)",
+    "publisher": "Sindre Sorhus"
+  },
+  "typescript@6.0.3": {
+    "licenses": "Apache-2.0",
+    "publisher": "Microsoft Corp."
+  },
+  "ua-parser-js@1.0.41": {
+    "licenses": "MIT",
+    "publisher": "Faisal Salman"
+  },
+  "undici-types@7.24.6": {
+    "licenses": "MIT"
+  },
+  "unicode-canonical-property-names-ecmascript@2.0.1": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "unicode-match-property-ecmascript@2.0.0": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "unicode-match-property-value-ecmascript@2.2.1": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "unicode-property-aliases-ecmascript@2.2.0": {
+    "licenses": "MIT",
+    "publisher": "Mathias Bynens"
+  },
+  "unpipe@1.0.0": {
+    "licenses": "MIT",
+    "publisher": "Douglas Christopher Wilson"
+  },
+  "update-browserslist-db@1.2.3": {
+    "licenses": "MIT",
+    "publisher": "Andrey Sitnik"
+  },
+  "urijs@1.19.11": {
+    "licenses": "MIT",
+    "publisher": "Rodney Rehm"
+  },
+  "use-callback-ref@1.3.3": {
+    "licenses": "MIT",
+    "publisher": "theKashey"
+  },
+  "use-latest-callback@0.2.6": {
+    "licenses": "MIT",
+    "publisher": "Satyajit Sahoo"
+  },
+  "use-sidecar@1.1.3": {
+    "licenses": "MIT",
+    "publisher": "theKashey"
+  },
+  "utils-merge@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Jared Hanson"
+  },
+  "uuid@7.0.3": {
+    "licenses": "MIT"
+  },
+  "validate-npm-package-name@5.0.1": {
+    "licenses": "ISC",
+    "publisher": "GitHub Inc."
+  },
+  "vary@1.1.2": {
+    "licenses": "MIT",
+    "publisher": "Douglas Christopher Wilson"
+  },
+  "vaul@1.1.2": {
+    "licenses": "MIT",
+    "publisher": "Emil Kowalski"
+  },
+  "vlq@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Rich Harris"
+  },
+  "walker@1.0.8": {
+    "licenses": "Apache-2.0",
+    "publisher": "Naitik Shah"
+  },
+  "warn-once@0.1.1": {
+    "licenses": "MIT",
+    "publisher": "Satyajit Sahoo"
+  },
+  "wcwidth@1.0.1": {
+    "licenses": "MIT",
+    "publisher": "Tim Oxley"
+  },
+  "webidl-conversions@3.0.1": {
+    "licenses": "BSD-2-Clause",
+    "publisher": "Domenic Denicola"
+  },
+  "whatwg-fetch@3.6.20": {
+    "licenses": "MIT"
+  },
+  "which@2.0.2": {
+    "licenses": "ISC",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "wrap-ansi@7.0.0": {
+    "licenses": "MIT",
+    "publisher": "Sindre Sorhus"
+  },
+  "ws@7.5.11": {
+    "licenses": "MIT",
+    "publisher": "Einar Otto Stangvik"
+  },
+  "ws@8.21.0": {
+    "licenses": "MIT",
+    "publisher": "Einar Otto Stangvik"
+  },
+  "xcode@3.0.1": {
+    "licenses": "Apache-2.0",
+    "publisher": "Apache Software Foundation",
+    "noticeFile": "C:\\Users\\legion\\epc-app\\node_modules\\xcode\\NOTICE"
+  },
+  "xml2js@0.6.0": {
+    "licenses": "MIT",
+    "publisher": "Marek Kubica"
+  },
+  "xmlbuilder@11.0.1": {
+    "licenses": "MIT",
+    "publisher": "Ozgur Ozcitak"
+  },
+  "xmlbuilder@15.1.1": {
+    "licenses": "MIT",
+    "publisher": "Ozgur Ozcitak"
+  },
+  "xtend@4.0.2": {
+    "licenses": "MIT",
+    "publisher": "Raynos"
+  },
+  "yallist@3.1.1": {
+    "licenses": "ISC",
+    "publisher": "Isaac Z. Schlueter"
+  },
+  "yaml@2.9.0": {
+    "licenses": "ISC",
+    "publisher": "Eemeli Aro"
+  },
+  "zod@3.25.76": {
+    "licenses": "MIT",
+    "publisher": "Colin McDonnell"
+  }
+}

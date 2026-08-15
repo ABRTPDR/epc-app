@@ -24,6 +24,20 @@ import APOGEEGraphic from '@/components/icons/APOGEEGraphic';
 import BOSMGraphic from '@/components/icons/BOSMGraphic';
 import OasisGraphic from '@/components/icons/OasisGraphic';
 
+// Force the Jetpack CDN to resize images on the edge server
+const optimiseJetpackUrl = (url: string | undefined, size: number) => {
+  if (!url) return null;
+  
+  // If it goes through the WP global CDN (i0.wp.com, i1.wp.com, etc.)
+  if (url.includes('.wp.com')) {
+    const baseUrl = url.split('?')[0]; // Strip the unnecessarily large ?fit params
+    // Use URL-encoded commas "%2C"
+    return `${baseUrl}?resize=${size}%2C${size}&ssl=1`;
+  }
+  
+  return url;
+};
+
 export default function FestPressYearScreen() {
   // Destructure 'issue' from params for article metadata onclick linking
   const { year, press, issue } = useLocalSearchParams<{ year: string; press: 'AEP' | 'BEP' | 'OEP'; issue?: string }>();
@@ -68,14 +82,6 @@ export default function FestPressYearScreen() {
     value: issue.name // Using name as unique value since GroupedIssues lack categoryIds
   }));
 
-  // Calculate IDs before query so React Query can track them
-  const catIds = useMemo(() => {
-    if (!selectedIssue) return '';
-    return 'children' in selectedIssue
-      ? selectedIssue.children.map(c => c.categoryId).join(',')
-      : selectedIssue.categoryId.toString();
-  }, [selectedIssue]);
-
   /*
   // Commented out: Logic without article inclusion/exclusion
   const { data: articles, isLoading, isError } = useQuery({
@@ -109,12 +115,46 @@ export default function FestPressYearScreen() {
     return [{ title: '', data: articles }];
   }, [articles, selectedIssue]);
   */
- const { data: articles, isLoading, isError } = useQuery({
-    queryKey: ['fest_articles', press, year, selectedIssue?.name, catIds],
+  
+  // Calculate IDs and overrides before the query so React Query can track them
+  const { catIds, includedStr, excludedStr } = useMemo(() => {
+    if (!selectedIssue) return { catIds: '', includedStr: '', excludedStr: '' };
+
+    let cats: number[] = [];
+    let inc: number[] = [];
+    let exc: number[] = [];
+
+    if ('children' in selectedIssue) {
+      selectedIssue.children.forEach(c => {
+        // Only push actual category IDs to the network request
+        if (c.categoryId !== 0) cats.push(c.categoryId);
+        
+        if (c.includedArticles) inc.push(...c.includedArticles);
+        if (c.excludedArticles) exc.push(...c.excludedArticles);
+      });
+    } else {
+      if (selectedIssue.categoryId !== 0) cats.push(selectedIssue.categoryId);
+      if (selectedIssue.includedArticles) inc.push(...selectedIssue.includedArticles);
+      if (selectedIssue.excludedArticles) exc.push(...selectedIssue.excludedArticles);
+    }
+
+    return {
+      // If the array is empty (all children were dummy 0s), return '0' to trigger the skip logic
+      catIds: cats.length > 0 ? cats.join(',') : '0', 
+      includedStr: inc.join(','),
+      excludedStr: exc.join(','),
+    };
+  }, [selectedIssue]);
+
+  // TanStack query: automatically refetch and separate caches
+  const { data: articles, isLoading, isError } = useQuery({
+    // Extracted strings injected directly into the key so cache updates instantly
+    queryKey: ['fest_articles', press, year, selectedIssue?.name, catIds, includedStr, excludedStr],
+    
     queryFn: async () => {
       let allArticles: any[] = [];
 
-      // Main fetch: only fetch standard categories if ID is not '0' placeholder
+      // Main fetch
       if (catIds !== '0') {
         const catResponse = await axios.get(
           `https://epcbits.com/wp-json/wp/v2/posts?categories=${catIds}&_embed&per_page=100`
@@ -122,37 +162,31 @@ export default function FestPressYearScreen() {
         allArticles = catResponse.data;
       }
 
-      // Overrides: pull arrays from either an Issue or GroupedIssue's children
-      let excludedIds: number[] = [];
-      let includedIds: number[] = [];
-
-      if ('children' in selectedIssue) {
-        selectedIssue.children.forEach(child => {
-          if (child.excludedArticles) excludedIds.push(...child.excludedArticles);
-          if (child.includedArticles) includedIds.push(...child.includedArticles);
-        });
-      } else {
-        if (selectedIssue.excludedArticles) excludedIds.push(...selectedIssue.excludedArticles);
-        if (selectedIssue.includedArticles) includedIds.push(...selectedIssue.includedArticles);
+      // Exclusion filter
+      if (excludedStr) {
+        const excludedIds = excludedStr.split(',').map(Number);
+        allArticles = allArticles.filter((article: any) => !excludedIds.includes(article.id));
       }
 
-      // Excluded articles
-      if (excludedIds.length > 0) {
-        allArticles = allArticles.filter(article => !excludedIds.includes(article.id));
-      }
-
-      // Included articles: get by ID and append
-      if (includedIds.length > 0) {
-        const idsString = includedIds.join(',');
+      // Addition fetch
+      if (includedStr) {
         const extraResponse = await axios.get(
-          `https://epcbits.com/wp-json/wp/v2/posts?include=${idsString}&_embed`
+          `https://epcbits.com/wp-json/wp/v2/posts?include=${includedStr}&_embed&per_page=100` // Without &per_page=100, WordPress API only returns 10 items in included/excluded list
         );
-        allArticles = [...allArticles, ...extraResponse.data];
+        
+        // Prevent crashes by filtering out potential duplicate IDs
+        const newArticles = extraResponse.data.filter(
+          (newArt: any) => !allArticles.some((existingArt: any) => existingArt.id === newArt.id)
+        );
+
+        allArticles = [...allArticles, ...newArticles];
       }
+
+      // Sort by date
+      allArticles.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
       return allArticles;
     },
-    // !!'0' is technically true in JS, ensure it fires perfectly every time
     enabled: catIds !== undefined && catIds !== null && catIds !== '', 
   });
 
@@ -163,11 +197,16 @@ export default function FestPressYearScreen() {
     if ('children' in selectedIssue) {
       return selectedIssue.children.map(child => ({
         title: child.name,
-        // Filter bulk response to match category ID or explicitly included IDs
-        data: articles.filter((a: any) => 
-          a.categories.includes(child.categoryId) || 
-          (child.includedArticles && child.includedArticles.includes(a.id))
-        )
+        data: articles.filter((a: any) => {
+          // If in excludedArticles, drop it
+          if (child.excludedArticles && child.excludedArticles.includes(a.id)) {
+            return false;
+          }
+          
+          // Else, check if it matches the category ID or is in includedArticles
+          return a.categories.includes(child.categoryId) || 
+                 (child.includedArticles && child.includedArticles.includes(a.id));
+        })
       })).filter(section => section.data.length > 0); // Hide subheadings that have 0 articles
     } 
     
@@ -180,13 +219,32 @@ export default function FestPressYearScreen() {
     ? new Date(articles[0].date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     : `Loading...`;
 
-  const cleanExcerpt = (htmlString: string) => {
+  const cleanExcerpt = (htmlString?: string) => {
+    if (!htmlString) return '';
+
+    // Strip HTML tags
     const stripped = htmlString.replace(/(<([^>]+)>)/gi, "");
-    return decode(stripped).trim();
+    
+    // Decode entities (turns &nbsp; into actual spaces)
+    const decoded = decode(stripped);
+    
+    // Deal with invisible characters eg. non-breaking spaces that escape trim()
+    // Strip all spaces, tabs, newlines, and zero-width characters to test if truly empty
+    const pureText = decoded.replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '');
+    
+    // Catch the artifacts
+    if (pureText === '' || pureText === '[&hellip;]' || pureText === '[...]') {
+      return '';
+    }
+    
+    // If it has real letters/text, return the normally trimmed version
+    return decoded.trim();
   };
 
   const renderArticleCard = ({ item }: { item: any }) => {
-    const thumbnailUrl = item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    // Intercept Jetpack URL and shrink to 200x200 for the 120x120 thumbnail, fallback to full size thumbnail
+    const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 200)
+      || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
     // Conditionally use URL image or local fallback
     const headerImageSource = thumbnailUrl 
       ? { uri: thumbnailUrl } 
@@ -289,7 +347,9 @@ export default function FestPressYearScreen() {
         <SectionList
           ref={listRef}
           sections={sections}
-          keyExtractor={(item) => item.id.toString()}
+          // keyExtractor={(item) => item.id.toString()}
+          // Appending the index guarantees unique keys across entire list
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={renderArticleCard}
           renderSectionHeader={({ section: { title } }) => (
             title ? (

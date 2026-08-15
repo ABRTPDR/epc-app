@@ -52,7 +52,15 @@ export interface EPCArticle {
   _embedded?: {
     'wp:featuredmedia'?: Array<{
       source_url: string;
+      media_details?: {
+        sizes?: {
+          thumbnail?: {
+            source_url: string;
+          };
+        };
+      };
     }>;
     'wp:term'?: Array<Array<{ name: string }>>;
   };
+  jetpack_featured_media_url?: string;
 }

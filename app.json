@@ -3,13 +3,13 @@
     "name": "EPC App",
     "slug": "epc-app",
     "scheme": "epcbits",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "2",
+      "buildNumber": "3",
       "infoPList": {
         "LSApplicationQueriesSchemes": [
           "mailto",
@@ -44,7 +44,11 @@
           ],
           "category": ["BROWSABLE", "DEFAULT"]
         }
-      ]
+      ],
+      "navigationBar": {
+        "backgroundColor": "#FFFFFF",
+        "barStyle": "dark-content"
+      }
     },
     "web": {
       "bundler": "metro",

@@ -11,3 +11,14 @@
 - Added placeholder image for articles lacking hero image
 - Added grey layer behind blurred collapsed header, for proper blur on articles with transparent hero images
 - UI/UX polish
+
+## v0.3.0
+- Built 'CF' section
+- Implemented 'TFP/AEP/BEP/OEP/CF' search filtering and search history
+- Built 'App Settings' page with clear cache button and OSS licenses
+- Changes implemented from TODO:
+    - Nav bar text labels position inconsistent if user using button navigations instead of gesture bar on Android
+    - Allowing zooming in and implementing smoother animations for in-article image viewer gallery
+- Enabled zooming in on images in image gallery and PDFs rendered in-app
+- Fixed broken nav bar layout on tablets
+- UI/UX polish

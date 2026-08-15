@@ -24,7 +24,7 @@ export default function MoreScreen() {
   try {
     // Skip 'canOpenURL' because Android 11+ blocks it for undeclared schemes
     // Linking.openURL natively asks the OS to handle the routing
-    // If the app is installed, the OS opens it. If not, opens Chrome/Safari
+    // If the app is installed, OS opens it. If not, opens Chrome/Safari
     await Linking.openURL(url);
   }
   catch (error) {
@@ -53,68 +53,56 @@ export default function MoreScreen() {
         <View style={styles.menuContainer}>
           
           {/* Internal link: The Team */}
-          <View style={styles.cardMask}>
-            <PressableRipple style={styles.menuCard} onPress={() => router.push('/team')}>
-              <Text style={styles.menuText}>The Team</Text>
-              <View style={styles.watermarkContainerTeam}>
-                <MoreTeam width={85} height={68} />
-              </View>
-            </PressableRipple>
-          </View>
+          <PressableRipple style={styles.menuCard} onPress={() => router.push('/team')}>
+            <Text style={styles.menuText}>The Team</Text>
+            <View style={styles.watermarkContainerTeam}>
+              <MoreTeam width={85} height={68} />
+            </View>
+          </PressableRipple>
 
           {/* Internal link: Interactive Campus Map */}
-          <View style={styles.cardMask}>
-            <PressableRipple style={styles.menuCard} onPress={() => router.push('/map')}>
-              <Text style={styles.menuText}>Interactive Campus Map</Text>
-              <View style={styles.watermarkContainerMap}>
-                <Image 
-                  source={require('@/assets/images/MoreMap.png')} 
-                  style={styles.mapPngWatermark}
-                  contentFit="contain"
-                />
-              </View>
-            </PressableRipple>
-          </View>
+          <PressableRipple style={styles.menuCard} onPress={() => router.push('/map')}>
+            <Text style={styles.menuText}>Interactive Campus Map</Text>
+            <View style={styles.watermarkContainerMap}>
+              <Image 
+                source={require('@/assets/images/MoreMap.png')} 
+                style={styles.mapPngWatermark}
+                contentFit="contain"
+              />
+            </View>
+          </PressableRipple>
 
-          {/* Internal link: The EPC Podcast */}
-          <View style={[styles.cardMask, { marginBottom: 16 }]}>
-            <PressableRipple style={styles.menuCard} onPress={() => openExternalLink('https://open.spotify.com/show/3IQ07Nd2LWX9Qf0o40hnHS')}>
-              <Text style={styles.menuText}>The EPC Podcast</Text>
-              <View style={styles.watermarkContainerPodCF}>
-                <MorePodcast width={68} height={68} />
-              </View>
-            </PressableRipple>
-          </View>
+          {/* External Spotify link: The EPC Podcast */}
+          <PressableRipple style={[styles.menuCard, {marginBottom: 16}]} onPress={() => openExternalLink('https://open.spotify.com/show/3IQ07Nd2LWX9Qf0o40hnHS')}>
+            <Text style={styles.menuText}>The EPC Podcast</Text>
+            <View style={styles.watermarkContainerPodCF}>
+              <MorePodcast width={68} height={68} />
+            </View>
+          </PressableRipple>
 
-          {/* Mailto link: Contribute to CF */}
-          <View style={styles.cardMask}>
-            <PressableRipple style={styles.menuCard} onPress={() => openExternalLink(`mailto:${EPC_EMAIL}?subject=Contribution to Cactus Flower`)}>
-              <Text style={styles.menuText}>Contribute to Cactus Flower</Text>
-              <View style={styles.watermarkContainerPodCF}>
-                <MoreCF width={68} height={68} />
-              </View>
-            </PressableRipple>
-          </View>
+          {/* External Mailto link: Contribute to CF */}
+          <PressableRipple style={styles.menuCard} onPress={() => openExternalLink(`mailto:${EPC_EMAIL}?subject=Contribution to Cactus Flower`)}>
+            <Text style={styles.menuText}>Contribute to Cactus Flower</Text>
+            <View style={styles.watermarkContainerPodCF}>
+              <MoreCF width={68} height={68} />
+            </View>
+          </PressableRipple>
 
-          {/* Mailto link: Contact Us */}
-          <View style={[styles.cardMask, { marginBottom: 16 }]}>
-            <PressableRipple style={styles.menuCard} onPress={() => openExternalLink(`mailto:${EPC_EMAIL}?subject=EPC App Feedback`)}>
-              <Text style={styles.menuText}>Give Us Feedback</Text>
-              <View style={styles.watermarkContainerContactUs}>
-                <MoreContactUs width={42} height={60} />
-              </View>
-            </PressableRipple>
-          </View>
+          {/* External Mailto link: Give Us Feedback */}
+          <PressableRipple style={[styles.menuCard, {marginBottom: 16}]} onPress={() => openExternalLink(`mailto:${EPC_EMAIL}?subject=EPC App Feedback`)}>
+            <Text style={styles.menuText}>Give Us Feedback</Text>
+            <View style={styles.watermarkContainerContactUs}>
+              <MoreContactUs width={42} height={60} />
+            </View>
+          </PressableRipple>
 
           {/* Internal link: App Settings */}
-          <View style={styles.cardMask}>
-            <PressableRipple style={styles.menuCard} onPress={() => router.push('/settings')}>
-              <Text style={styles.menuText}>App Settings</Text>
-              <View style={styles.watermarkContainerAppSettings}>
-                <MoreAppSettings width={84} height={84} />
-              </View>
-            </PressableRipple>
-          </View>
+          <PressableRipple style={styles.menuCard} onPress={() => router.push('/settings')}>
+            <Text style={styles.menuText}>App Settings</Text>
+            <View style={styles.watermarkContainerAppSettings}>
+              <MoreAppSettings width={84} height={84} />
+            </View>
+          </PressableRipple>
 
         </View>
 
@@ -122,19 +110,17 @@ export default function MoreScreen() {
         <View style={styles.socialRow}>
           
           {/* Instagram */}
-          <View style={[styles.socialCardLeftMask, { flex: 1 }]}>
-            <PressableRipple 
-              style={styles.socialCardLeft} 
-              onPress={() => openExternalLink('https://instagram.com/epc.bits')}
-            >
-              <Image 
-                  source={require('@/assets/images/InstagramIcon.png')} 
-                  style={styles.socialIcon}
-                  contentFit="contain"
-                />
-              <Text style={styles.socialText}>@epc.bits</Text>
-            </PressableRipple>
-          </View>
+          <PressableRipple 
+            style={styles.socialCardLeft} 
+            onPress={() => openExternalLink('https://instagram.com/epc.bits')}
+          >
+            <Image 
+                source={require('@/assets/images/InstagramIcon.png')} 
+                style={styles.socialIcon}
+                contentFit="contain"
+              />
+            <Text style={styles.socialText}>@epc.bits</Text>
+          </PressableRipple>
 
           {/* X/Twitter */}
           <PressableRipple 
@@ -150,15 +136,13 @@ export default function MoreScreen() {
           </PressableRipple>
 
           {/* EPC website */}
-          <View style={[styles.socialCardRightMask, { flex: 1 }]}>
-            <PressableRipple 
-              style={styles.socialCardRight} 
-              onPress={() => openExternalLink('https://epcbits.com')}
-            >
-              <MoreWebsite height={24} width={24} />
-              <Text style={styles.socialText}>epcbits.com</Text>
-            </PressableRipple>
-          </View>
+          <PressableRipple 
+            style={styles.socialCardRight} 
+            onPress={() => openExternalLink('https://epcbits.com')}
+          >
+            <MoreWebsite height={24} width={24} />
+            <Text style={styles.socialText}>epcbits.com</Text>
+          </PressableRipple>
 
         </View>
       </ScrollView>
@@ -168,12 +152,12 @@ export default function MoreScreen() {
 
 const styles = StyleSheet.create({
   headerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 20,
-      marginTop: 16,
-      marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    marginTop: 16,
+    marginBottom: 20,
   },
   logo: {
     width: 60,
@@ -203,6 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   scrollContent: {
+    marginTop: 8,
     paddingHorizontal: 20,
     paddingBottom: 120,
   },
@@ -219,10 +204,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
     overflow: 'hidden', // Clip SVG graphic
-  },
-  cardMask: {
-    borderRadius: 20,
-    overflow: 'hidden',
   },
   menuText: {
     fontSize: 16,
@@ -300,11 +281,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 2,
   },
-  socialCardLeftMask: {
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
-    overflow: 'hidden',
-  },
   socialCardMiddle: {
     flex: 1,
     height: 80,
@@ -322,11 +298,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 2
-  },
-  socialCardRightMask: {
-    borderTopRightRadius: 16,
-    borderBottomRightRadius: 16,
-    overflow: 'hidden',
   },
   socialText: {
     fontSize: 11,

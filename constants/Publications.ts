@@ -28,6 +28,11 @@ export type YearCatalog = {
 
 // Record<string, YearCatalog> ensures TypeScript knows exact structure
 export const TFP_CATALOG: Record<string, YearCatalog> = {
+  "2026": {
+    issues: [
+      { name: "Issue Zero", categoryId: 476 },
+    ]
+  },
   "2025": {
     issues: [
       { name: "Issue Zero", categoryId: 445 },
@@ -47,7 +52,12 @@ export const TFP_CATALOG: Record<string, YearCatalog> = {
 			{ name: "Issue Two", categoryId: 428 },
 			{ name: "Issue Three", categoryId: 437 },
 			{ name: "HuEl Guide – Sem 2", categoryId: 438 },
-			{ name: "Issue Four", categoryId: 439 },
+      { name: "Issue Four", categoryId: 439 },
+      { 
+        name: "Psenti-Speaks", 
+        categoryId: 0, 
+        includedArticles: [ 9592, 9605, 9624, 9838, 9844 ] // [ Psenti-Speak: Aditya H Iyer, Psenti-Speak: Aditi Chandramoulee, Psenti-Speak: Akshatha Sabaji, Psenti-Speak: Harshita Yadav, Psenti-Speak: Aditya Gupta ]
+      },
     ]
   },
 	"2023": {
@@ -85,7 +95,6 @@ export const TFP_CATALOG: Record<string, YearCatalog> = {
   },
 	"2020": {
     issues: [
-      // { name: "Issue Zero", categoryId:  }, Issue Zero missing?
       { name: "Issue One", categoryId: 294 },
 			{ name: "Issue Two", categoryId: 295 },
       { name: "Issue Three", categoryId: 296 },
@@ -134,19 +143,28 @@ export const TFP_CATALOG: Record<string, YearCatalog> = {
 			{ name: "Issue Two", categoryId: 261 },
       { name: "Issue Three", categoryId: 262 },
 			{ name: "Issue Four", categoryId: 263 },
-			{ name: "Issue Five", categoryId: 266 },
+      { 
+        name: "Issue Five", 
+        categoryId: 266, 
+        excludedArticles: [ 1792 ] // [ Yours in Exasperation – 3 ]
+      },
 			{ name: "Issue Six", categoryId: 267 },
 			{ name: "Issue Seven", categoryId: 268 },
 			{ name: "Issue Eight", categoryId: 269 },
       { name: "Issue Nine", categoryId: 270 },
 			{ name: "Issue Ten", categoryId: 271 },
-			{ name: "Letters to the Editor", categoryId: 272 },
+      { 
+        name: "Letters to the Editor", 
+        categoryId: 272, 
+        includedArticles: [ 1792 ] // [ Yours in Exasperation – 3 ]
+      },
     ]
   },
 };
 
 // For order of cards on screen, as 'Sem 1' 'Sem 2' interferes with Object.keys(TFP_CATALOG).reverse()
 export const TFP_YEARS_ORDER = [
+  "2026",
   "2025",
   "2024",
   "2023",
@@ -170,7 +188,7 @@ export const AEP_CATALOG: Record<string, YearCatalog> = {
   "2026 – The Skeuomorph": {
     issues: [
       { 
-        name: "Issue Zero (Pre-fest)", 
+        name: "Pre-fest", 
         children: [
           { name: "CoStAA", categoryId: 470 },
           { name: "Departments", categoryId: 471 },
@@ -219,9 +237,17 @@ export const AEP_CATALOG: Record<string, YearCatalog> = {
   // "2021 – Pressadise Lost", // Issue Zero, Issue One, Issue Two
   "2020 – April Fools Press": {
     issues: [
+      /*
       { name: "Pre-fest",
         categoryId: 181,
         excludedArticles: [ 5231 ] // [ April Fool’s Press 2020 ]
+      },
+      */
+      { name: "Pre-fest",
+        children: [
+          { name: "Speakers", categoryId: 0, includedArticles: [ 4806, 4812 ] }, // [ Zainab Nagin Cox, Zed A. Shaw ]
+          { name: "APOGEE 2020: The Glitch Repository", categoryId: 0, includedArticles: [ 4723, 4719, 4713 ] }, // [ The Calamity at Kumbh, The Strangulation of the Sea, The Cost of Water ]
+        ]
       },
       {
         name: "Fest Issue",
@@ -232,20 +258,70 @@ export const AEP_CATALOG: Record<string, YearCatalog> = {
   },
   "2019": {
     issues: [
+      /*
       { name: "Pre-fest", categoryId: 180 },
-      // KnowYourAPOGEE and Speakers, Winning Abstracts from APOGEE 2018
+      */
+      {
+        name: "Pre-fest",
+        children: [
+          { name: "What to Expect", categoryId: 0, includedArticles: [ 3372 ] }, // [ Kernel Events ]
+          { name: "KnowYourAPOGEE", categoryId: 0, includedArticles: [ 3276, 3282, 3291, 3294, 3299 ] }, // [ Papyrus Trails, KnowYourAPOGEE: The First One, KnowYourAPOGEE: 1989, KnowYourAPOGEE: An Eventful Summary, KnowYourAPOGEE: Speakers and Shows ]
+          { name: "Speakers", categoryId: 0, includedArticles: [ 3102, 3138, 3144, 3147, 3150, 3268, 3272 ] }, // [ Ashwin Sanghi, Rakesh Sharma, Vikramaditya Motwane, Alan Emtage, Arun Shourie, Lt Gen. S.S. Hasabnis, Stephen P. Morse ]
+          { name: "CoStAA", categoryId: 0, includedArticles: [ 3356, 3350, 3332, 3344, 3347, 3353, 3365, 3359, 3362,  ]}, // [ President – Satyansh Rai, GenSec – Akash Singh, ADP – Aditya Pawar, Controls – Apoorv Saxena, DVM – Megh Thakkar, PCr-APOGEE – Parv Panthari, PEP – Anirudh Singla, RecN’Acc – Yatharth Singh, Sponz – Anushka Pathak ]
+          { name: "Winning Abstracts from APOGEE 2018", categoryId: 0, includedArticles: [ 3302, 3305, 3308, 3311, 3314, 3317, 3320, 3323, 3327 ] }, // [ Solutions for the Effects of Urbanization on Birds, Reinforced Thermoplastic Constructions, Optimizing the ratio of number of tubes in PCNTFET to NCNTFET for digital circuits, Analysis and Design of Vehicle Dynamics of Permanent-magnet Levitation–based Hyperloop System., Analyzing gas sensing MEMS cantilever with distinctive geometries of comparable dimensions, CFD Analysis of Badminton Shuttlecock, Continuous Minutiae Template Learning for Accurate Fingerprint Matching, Optimisation of cleaning and recovery in an oil spill, Garbage Exterminating and Auto Fuelling System (GExAF) ]
+        ]
+      }
     ]
   },
   "2018": {
     issues: [
+      /*
       { name: "Pre-fest", categoryId: 179 },
-      // What to Expect, Issue One, Issue Two, Issue Three, Winning Abstracts from APOGEE 2017
+      */
+      {
+        name: "Pre-fest",
+        children: [
+          { name: "Pre-APOGEE", categoryId: 0, includedArticles: [ 1835 ] }, // [ TEDx 2018 ]
+          { name: "What to Expect", categoryId: 0, includedArticles: [ 1965, 2031, 1934, 1840, 2027, 1979 ] }, // [ Kernel Events, Event Descriptions, Speakers in APOGEE 2018, Exhibitions, Paper Presentation Guide, Project Presentation Guide ]
+          { name: "APOGEE 2018: A Cybernetic Vision", categoryId: 0, includedArticles: [ 1953, 1957, 1975 ] }, // [ The Master Race To Colonisation, The Replacement Argument, Consequences of Planet Colonisation ]
+          { name:"CoStAA", categoryId: 0, includedArticles: [ 1999, 1990, 2002, 1983, 1993, 2012, 2009, 1996, 2006 ] }, // [ President – Bharatharatna Puli, General Secretary – Shivam Jindal, ADP – Vaibhav Jain, Controls – Himangshu Baid, DVM – Hitesh Raghuvanshi, PCr APOGEE – Alanckrit Jain, PEP – Abhishek Gupta, RecNAcc – Anshuman Sharma, Sponz – Keshav Jain ]
+          { name: "Winning Abstracts from APOGEE 2017", categoryId: 0, includedArticles: [ 1880, 1878, 1876, 1874, 1872, 1870, 1868, 1866, 1864, 1860, 1858, 1856, 1854, 1852, 1850, 1845 ] }, // [ Social & Developmental Psychology of Game of Thrones Viewership amongst Youth, Investigations of gravitational wave recoil in binary black hole systems, Women as Seen Through Tagore and Shakespeare’s Works, Ornithopter, Alternate fuel-punga+diesel combination, Near Field Scanning Optical Imaging of Gold Nanoparticles in the Sub-Wavelength Limit, Why is the discovery of Ideonella Sakaiensis revolutionary?, ALGAE: THE FUTURE SAVIOR, TIME SYNCHRONISATION OF MOBILE MAPPING SYSTEM: AN INNOVATIVE APPROACH, Interfacing Graphical LCD with Microcontroller based measurement system, Baseband Pulse Shaping for GMSK Modulation, Analytical Investigation of Delays in 2D MoS2 based lateral BJTs, Predicting Stocks Using Neural Network with Denoising and Hodrick-Prescott Filter (Hp Filter), Conceptualization and Design of Flight Software for On-board Computer System of Small Satellites, Advanced Response Formats for REST Model, Evaluation of Stone Mastic Asphalt using Jute Fibre as Low Cost Fibre ]
+        ]
+      },
+      {
+        name: "Issue One",
+        categoryId: 0,
+        includedArticles: [ 2044, 2046, 2048, 2050, 2052, 2054, 2056 ], // [ Inauguration : A Review, Overhead Transmission : A Review, The Local Train : A Preview, Mitra : The Indigenous Robot, NAO Bot, David Stork : A Preview, Peek – Ta – Boo! ]
+      },
+      {
+        name: "Issue Two",
+        categoryId: 0,
+        includedArticles: [ 2074, 2058, 2060, 2071, 2076 ], // [ The Local Train, Chief Guest Interview (Cmdre Indrajit Dasgupta), India Quiz, E-Summit: Dr. Anil Kumar Gupta, Talk by Mr. Vishal Kamat ]
+      },
+      {
+        name: "Issue Three",
+        categoryId: 0,
+        includedArticles: [ 2066, 2068 ], // [ Jeopardy, Danielle Feinberg: A Preview ]
+      }
     ]
   },
   "2017": {
     issues: [
+      /*
       { name: "Pre-fest", categoryId: 178 },
-      // This Day in Tech History
+      */
+      {
+        name: "Pre-fest",
+        children: [
+          { name: "Pre-APOGEE", categoryId: 0, includedArticles: [ 334, 338 ] }, // [ BITSMUN 2017, QED 2017 ]
+          { name: "APOGEE 2017: The RetroFuture", categoryId: 0, includedArticles: [ 199, 205, 207, 321, 324, 339 ] }, // [ Maxwell’s Demon, A Petition for Women Empowerment, Retrofuturism in Infinite Jest, Genetic Engineering, Gender Fluidity, Retrofuturism in Bioshock ]
+          { name: "This Day in Tech History", categoryId: 0, includedArticles: [ 23, 39, 58, 90, 104, 118, 143, 162, 182, 216, 237, 251, 276, 282, 296, 309, 342, 352, 364, 376, 388 ] }, // [ February 3rd, February 4th, February 5th, February 6th, February 7th, February 8th, February 9th, February 10th, February 11th, February 12th, February 13th, February 14th, Feburary 16th, Feburary 17th, February 18th, February 19th, February 20th, February 21st, February 22nd, February 23rd, February 24th ]
+          { name: "CoStAA", categoryId: 0, includedArticles: [ 462, 466, 468 ] }, // [ DVM – An Interview, PCr (APOGEE) – An Interview, PEP – An Interview ]
+          { name: "Departments", categoryId: 0, includedArticles: [ 424, 422, 426, 464 ] }, // [ DExA – An Interview, DLE – An Interview, DoPy – An Interview, Informalz – An Interview,  ]
+          { name: "Tech Teams, Chapters and Associations", categoryId: 178, excludedArticles: [ 334, 338, 199, 205, 207, 321, 324, 339, 23, 39, 58, 90, 104, 118, 143, 162, 182, 216, 237, 251, 276, 282, 296, 309, 342, 352, 364, 376, 388, 462, 466, 468, 424, 422, 426, 464, 409, 421, 429, 431, 434, 439, 444, 446, 459 ] }, // Remaining articles excluding above and below
+          { name: "Clubs", categoryId: 0, includedArticles: [ 409, 421, 429, 431, 434, 439, 444, 446, 452, 459 ] }, // [ The Astro Club – An Interview, Dance Club – An Interview, Gaming Club – An Interview, HAS – An Interview, Photog – An Interview, AHP – An Interview, Gurukul – An Interview, Nirmaan – An Interview, Coding Club – An Interview, FMaC – An Interview ]
+        ]
+      }
     ]
   },
 }
@@ -269,7 +345,7 @@ export const BEP_CATALOG: Record<string, YearCatalog> = {
       { 
         name: "Issue Zero (Pre-fest)", 
         children: [
-          { name: "CoSSAc", categoryId: 452 },
+          { name: "CoSSAc and SFC", categoryId: 452 },
           { name: "Sports Teams", categoryId: 454 },
           { name: "Clubs and Departments", categoryId: 453 },
         ]
@@ -281,7 +357,7 @@ export const BEP_CATALOG: Record<string, YearCatalog> = {
       { 
         name: "Issue Zero (Pre-fest)", 
         children: [
-          { name: "CoSSAc", categoryId: 429 },
+          { name: "CoSSAc and SFC", categoryId: 429 },
           { name: "Sports Teams", categoryId: 432 },
           { name: "Clubs and Departments", categoryId: 431 },
         ]
@@ -329,14 +405,41 @@ export const BEP_CATALOG: Record<string, YearCatalog> = {
   },
   "2017": {
     issues: [
+      /*
       { name: "Pre-fest", categoryId: 203 },
-      // Match Reports, Communication Breakdown
+      */
+      {
+        name: "Pre-fest",
+        categoryId: 203,
+        excludedArticles: [ 1233, 1241, 1243, 1245, 1248, 1251, 1253, 1257, 1264, 1266, 1269, 1272, 1274, 1222, 1227, 1230, 1259, 1261, 1281 ], // Remaining articles excluding below
+      },
+      {
+        name: "Matches",
+        categoryId: 0,
+        includedArticles: [ 1233, 1241, 1243, 1245, 1248, 1251, 1253, 1257, 1264, 1266, 1269, 1272, 1274 ], // [ (Volleyball Boys’ BITS A vs MRIU – 21 September 2017, 9:45 PM), Boys’ Football – BITS vs. GSB, Girls’ Football – BITS vs. MODY Univ., Hockey – BITS vs BITS Alumni, Boys’ Basketball – BITS Pilani vs. BITS Goa, Squash – Manipal vs. BITS A, Tennis Boys’ – BITS Pilani A vs. Manipal, Snooker – BITS vs. GSB, Lawn Tennis Girls, Taekwondo, Squash – BITS A vs. IIT Delhi, Boys’ Football – BITS vs. Venky’s, Chess – Match Showcase ]
+      },
+      {
+        name: "Communication Breakdown",
+        categoryId: 0,
+        includedArticles: [ 1222, 1227, 1230, 1259, 1261, 1281 ], // [ BOSM – A rundown, BOSM for the non-sports person, Interview with the Chief Guest, Tanvie Hans – A talk and an interview, Rotunda Events, BOSM – An Ode To The Future ]
+      },
     ]
   },
   "2016": {
     issues: [
+      /*
       { name: "Pre-fest", categoryId: 200 },
-      // Matches
+      */
+      {
+        name: "Pre-fest",
+        categoryId: 0,
+        includedArticles: [ 653, 100, 103, 114, 125, 655, 137, 142, 147, 154, 158, 175, 180, 183, 201, 204 ], // [ BOSM of the Future, Tennis, Table Tennis: Ball Crushers, Swimming (Girls), Powerlifting, Badminton (Boys), Badminton (Girls), Hockey, Athletics, Cricket, Basketball (Boys), Basketball (Girls), Carrom: More to it than flicking, Football (Girls): History in the Making, Volleyball (Girls): Sharing the court, sharing the sport, Taekwondo ]
+      },
+      {
+        name: "Matches",
+        categoryId: 200,
+        excludedArticles: [ 653, 100, 103, 114, 125, 655, 137, 142, 147, 154, 158, 175, 180, 183, 201, 204 ], // Remaining articles excluding above
+      },
     ]
   },
 }
@@ -431,16 +534,74 @@ export const OEP_CATALOG: Record<string, YearCatalog> = {
   "2018 – Memento Mori": {
     issues: [
       { name: "Pre-fest", categoryId: 225 },
+      /*
+      {
+        name: "Pre-fest",
+        children: [
+          { name: "Oasis 2018: The Far Out Fest", categoryId: 0, includedArticles: [ 2577, 2595, 2618, 2627, 2631 ] }, // [ Ghosts of Oases Past, Origin Story: The Peace Symbol, Origin Story: 420, The Madrid Scene, Jejemon ]
+          { name: "StuCCA", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "Departments", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "Clubs and Associations", categoryId: 225, excludedArticles: [ 2577, 2595, 2618, 2627, 2631,  ] }, // Remaining articles excluding above and below
+        ]
+      },
+      {
+        name: "Issue Zero",
+        categoryId: 0,
+        includedArticles: [  ], // [  ]
+      },
+      {
+        name: "Issue One",
+        categoryId: 0,
+        includedArticles: [  ], // [  ]
+      },
+      {
+        name: "Issue Two",
+        categoryId: 0,
+        includedArticles: [  ], // [  ]
+      },
+      {
+        name: "Issue Three",
+        categoryId: 0,
+        includedArticles: [  ], // [  ]
+      },
+      {
+        name: "Issue Four",
+        categoryId: 0,
+        includedArticles: [  ], // [  ]
+      },
+      */
     ]
   },
   "2017": {
     issues: [
       { name: "Pre-fest", categoryId: 224 },
+      /*
+      {
+        name: "Pre-fest",
+        children: [
+          { name: "Oasis 2017: Realms of Fiction", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "StuCCA", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "Departments", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "Clubs and Associations", categoryId: 224, excludedArticles: [  ] }, // Remaining articles excluding above
+        ]
+      },
+      */
     ]
   },
   "2016 – Mythology": {
     issues: [
       { name: "Pre-fest", categoryId: 223 },
+      /*
+      {
+        name: "Pre-fest",
+        children: [
+          { name: "Oasis 2016: Of Gods and Men", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "StuCCA", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "Departments", categoryId: 0, includedArticles: [  ] }, // [  ]
+          { name: "Clubs and Associations", categoryId: 223, excludedArticles: [  ] }, // Remaining articles excluding above
+        ]
+      },
+      */
     ]
   },
 }
@@ -454,4 +615,30 @@ export const OEP_YEARS_ORDER = [
   "2018 – Memento Mori",
   "2017",
   "2016 – Mythology",
+];
+
+export interface CFIssue {
+  year: string;
+  driveUrl: string;
+}
+
+export const CF_ISSUES: CFIssue[] = [
+  { year: '2020 Issue Two', driveUrl: 'https://drive.google.com/file/d/17UCuzeSMMzMH4x4vDuD1rb9E1Jg6-ux5/view?usp=drive_link' },
+  { year: '2020 Issue One', driveUrl: 'https://drive.google.com/file/d/18KL-Fv62wNkDnbBmT-oPiJGUb2fJ-CH_/view?usp=drive_link' },
+  { year: '2019', driveUrl: 'https://drive.google.com/file/d/1JBt9XUSwuEL61MeD6XsvFJfWpWRpHbKN/view?usp=drive_link' },
+  { year: '2017', driveUrl: 'https://drive.google.com/file/d/1KaDrcSScQ-MrjaceYdNrTApjh3DRmULr/view?usp=drive_link' },
+  { year: '2014', driveUrl: 'https://drive.google.com/file/d/1DtH-W2N5YnoHVyGaIxO3ixHNyD25zSgq/view?usp=drive_link' },
+  { year: '2012', driveUrl: 'https://drive.google.com/file/d/15oZhdXxsdDKICxrs5YyhhAyHTGFQvNvr/view?usp=drive_link' },
+  { year: '2011', driveUrl: 'https://drive.google.com/file/d/1m6-mcXJhW85rW2rlON72d0yrF65ngQ7B/view?usp=drive_link' },
+  { year: '2006', driveUrl: 'https://drive.google.com/file/d/1p9-J3on_JuwXYAgaibhuPgwNagBRPqVp/view?usp=drive_link' },
+  { year: '2005', driveUrl: 'https://drive.google.com/file/d/1BsWucDbhiWZxLYmpJ8VIUiVVVhNhdOzB/view?usp=drive_link' },
+  { year: '1998', driveUrl: 'https://drive.google.com/file/d/1-figwpuu72u7y6EgptOnu0ldslSwzir-/view?usp=drive_link' },
+  { year: '1997', driveUrl: 'https://drive.google.com/file/d/1ug1ga3DqKbaOZYkp36IpUnnBzLYNLCD_/view?usp=drive_link' },
+  { year: '1996', driveUrl: 'https://drive.google.com/file/d/1Zs2rC1JHcM8UIiOCWwI6l-7o_y24Q1hG/view?usp=drive_link' },
+  { year: '1995', driveUrl: 'https://drive.google.com/file/d/1RBz0CJaFcTDeY5ihNV1GjIrBxm8XKhfc/view?usp=drive_link' },
+  { year: '1992', driveUrl: 'https://drive.google.com/file/d/1BMVqS3MgCsqmCguAgDITC8ZJLbovUxMm/view?usp=drive_link' },
+  { year: '1991', driveUrl: 'https://drive.google.com/file/d/1U23y2sIcIVLXHwjN4mM7eqWWNuJ9OauJ/view?usp=drive_link' },
+  { year: '1989', driveUrl: 'https://drive.google.com/file/d/1IIdhYcWLbADhnr1J2IJQhdsIuE9yzzD0/view?usp=drive_link' },
+  { year: '1984', driveUrl: 'https://drive.google.com/file/d/11Yw938c7RyZxNDDXNQ2OJtW0pu7WUkuO/view?usp=drive_link' },
+  { year: '1983', driveUrl: 'https://drive.google.com/file/d/1yInBTu5copgQn_fIt1tN7jRIV4Yykmgk/view?usp=drive_link' },
 ];

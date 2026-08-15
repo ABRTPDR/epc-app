@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, Stack } from 'expo-router';
 
-import { 
+import {
   AEP_YEARS_ORDER, 
   BEP_YEARS_ORDER, 
   OEP_YEARS_ORDER 
@@ -35,10 +35,10 @@ export default function FestPressesIndexScreen() {
       
       <View style={styles.header}>
         <BackButton onPress={() => router.back()} color={Colors.grey} />
-        <SearchButton onPress={() => router.push('/search')} color={Colors.grey} />
+        <SearchButton onPress={() => router.push({ pathname: '/search', params: { filters: 'AEP,BEP,OEP' } })} color={Colors.grey} />
         <Text style={styles.headerTitle}>FEST PRESSES</Text>
         <Text style={styles.headerDescription}>
-          The days when the campus comes alive—of contests, clubs, camaraderie, and concerts—we celebrate, and we chronicle.
+          The days when the campus{'\n'}comes alive—of contests, clubs,{'\n'}camaraderie, and concerts—we{'\n'}celebrate, and we chronicle.
         </Text>
         <View style={styles.watermarkContainerEPC}>
           <EPCGraphic width={218} outerRingColour='#FFF2DF' accentColour='#FFC6B3' clockTowerColour={Colors.yellow} backgroundColour='#FEFBDF' />
@@ -47,56 +47,29 @@ export default function FestPressesIndexScreen() {
 
       <ScrollView contentContainerStyle={styles.listContainer}>
         {/* AEP Card */}
-        <View style={styles.cardMask}>
-          <View style={styles.card}>
-            <View style={styles.graphicBox}>
-              <APOGEEGraphic width={64} height={64} color='#FFB298' />
-            </View>
-            <Text style={styles.cardText}>APOGEE English Press</Text>
+        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('AEP', AEP_YEARS_ORDER[0])}>
+          <View style={styles.graphicBox}>
+            <APOGEEGraphic width={64} height={64} color='#FFB298' />
           </View>
-          
-          <PressableRipple 
-            style={StyleSheet.absoluteFill} 
-            onPress={() => handlePressNavigate('AEP', AEP_YEARS_ORDER[0])} 
-          >
-            {/* Satisfy AppPressableProps requirement for child element to apply onPress */}
-            <View />
-          </PressableRipple>
-        </View>
+          <Text style={styles.cardText}>APOGEE English Press</Text>
+        </PressableRipple>
 
         {/* BEP Card */}
-        <View style={styles.cardMask}>
-          <View style={styles.card}>
-            <View style={styles.graphicBox}>
-              <BOSMGraphic width={64} height={64} color='#FFB298' />
-            </View>
-            <Text style={styles.cardText}>BOSM English Press</Text>
+        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('BEP', BEP_YEARS_ORDER[0])} >
+          <View style={styles.graphicBox}>
+            <BOSMGraphic style={{marginTop: 2}} width={62} height={62} color='#FFB298' />
           </View>
-          
-          <PressableRipple 
-            style={StyleSheet.absoluteFill} 
-            onPress={() => handlePressNavigate('BEP', BEP_YEARS_ORDER[0])} 
-          >
-            <View />
-          </PressableRipple>
-        </View>
+          <Text style={styles.cardText}>BOSM English Press</Text>
+        </PressableRipple>
 
         {/* OEP Card */}
-        <View style={styles.cardMask}>
-          <View style={styles.card}>
-            <View style={styles.graphicBox}>
-              <OasisGraphic width={66} height={66} color='#FFB298' />
-            </View>
-            <Text style={styles.cardText}>Oasis English Press</Text>
+        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('OEP', OEP_YEARS_ORDER[0])}>
+          <View style={styles.graphicBox}>
+            <OasisGraphic width={66} height={66} color='#FFB298' />
           </View>
-          
-          <PressableRipple 
-            style={StyleSheet.absoluteFill} 
-            onPress={() => handlePressNavigate('OEP', OEP_YEARS_ORDER[0])} 
-          >
-            <View />
-          </PressableRipple>
-        </View>
+          <Text style={styles.cardText}>Oasis English Press</Text>
+        </PressableRipple>
+
       </ScrollView>
     </View>
   );
@@ -151,11 +124,6 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     borderRadius: 24,
     height: 80,
-  },
-  cardMask: {
-    borderRadius: 24,
-    overflow: 'hidden',
-    backgroundColor: Colors.card,
   },
   graphicBox: {
     backgroundColor: '#FEFBDF',

@@ -3,9 +3,12 @@ import { DefaultTheme, Stack, ThemeProvider, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'; // React query tools
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import * as Linking from 'expo-linking';
+import { Platform } from 'react-native';
+import * as NavigationBar from 'expo-navigation-bar';
+import { fetchTFPRecentArticles } from '@/app/(tabs)/explore/index'; 
 
 export {
   // Catch any errors thrown by the Layout component
@@ -47,10 +50,29 @@ export default function RootLayout() {
 // Create client instance outside component
 const queryClient = new QueryClient();
 
+// Preload the explore screen's TFP articles the second the app initializes!
+queryClient.prefetchQuery({
+  queryKey: ['tfp_recent_random'],
+  queryFn: fetchTFPRecentArticles,
+  staleTime: 1000 * 60 * 15,
+});
+
 function RootLayoutNav() {
 
   const router = useRouter();
   const url = Linking.useLinkingURL();
+
+  // Global Android navbar settings
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      try {
+        // @ts-ignore: Deprecated in favor of the component API, but safe to use
+        NavigationBar.setButtonStyleAsync('dark');
+      } catch (e) {
+        console.log('Nav bar config error:', e);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (url) {

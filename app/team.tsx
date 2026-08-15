@@ -27,7 +27,7 @@ const TEAM_DATA = [
   {
     year: '2024',
     members: [
-      'Anika Tyagi', 'Abhirup Tapadar', 'Aditi Baral (AEP Editor)', 'Aditya', 'Darsh Patel', 'Harivansh Mehta', 'Jayant Gupta', 'Latika Anand', 'Parasmay Acharya', 'Raafey Aziz', 'Saumya Goyal', 'Shireen Kar', 'Soham Saxena', 'Tanmay Arora (BEP Editor) (OEP Editor) (TFP Editor) (CF Editor) (Chief Editor)'
+      'Abhirup Tapadar', 'Aditi Baral (AEP Editor)', 'Aditya (Chief Designer)', 'Anika Tyagi', 'Darsh Patel (Chief Designer)', 'Harivansh Mehta', 'Jayant Gupta', 'Latika Anand', 'Parasmay Acharya (BEP Editor)', 'Raafey Aziz', 'Saumya Goyal (BEP Editor)', 'Shireen Kar (TFP Editor)', 'Soham Saxena', 'Tanmay Arora', 'Tanvi Gangakhedkar (CF Editor)'
     ]
   },
   {
@@ -52,7 +52,7 @@ const TEAM_DATA = [
   {
     year: '2024',
     members: [
-      'Anika T', 'Abhirup T', 'Aditi B (AEP Editor)', 'Aditya', 'Darsh P', 'Harivansh M', 'Jayant G', 'Latika A', 'Parasmay A', 'Raafey A', 'Saumya G', 'Shireen K', 'Soham S', 'Tanmay A (BEP Editor) (OEP Editor) (TFP Editor) (CF Editor) (Chief Editor)'
+      'Abhirup T', 'Aditi B (AEP Editor)', 'Aditya (Chief Designer)', 'Anika T', 'Darsh P (Chief Designer)', 'Harivansh M', 'Jayant G', 'Latika A', 'Parasmay A (BEP Editor)', 'Raafey A', 'Saumya G (OEP Editor)', 'Shireen K (TFP Editor)', 'Soham S', 'Tanmay A', 'Tanvi G (CF Editor)'
     ]
   },
   {
@@ -217,7 +217,7 @@ export default function TeamScreen() {
         {TEAM_DATA.map((batch, index) => {
           
           // Get batch card colour from the array. If index 4 or higher (5th card onwards), fall back to light grey
-          const cardColor = HIERARCHY_COLORS[index] || Colors.lightgrey;
+          const cardColor = HIERARCHY_COLORS[index] || Colors.lightGrey;
 
           return (
             <View 
