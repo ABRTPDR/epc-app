@@ -132,8 +132,8 @@ export default function HomeScreen() {
   // Carousel loop setup
   const activeArticles = articles?.slice(0, 8) || [];
   const renderArticleCard = ({ item, index }: { item: EPCArticle; index: number }) => {
-    // Intercept Jetpack URL and shrink to 900x900 for the home screen thumbnail
-    const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 900)
+    // Intercept Jetpack URL and shrink to 800x800 for the home screen thumbnail
+    const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 800)
       || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
     
     // Conditionally use URL image or local fallback

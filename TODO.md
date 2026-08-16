@@ -1,7 +1,6 @@
 # EPC App TODOs
 
 ## Bugs to Fix
-- CF thumbnails break on tablets
 - Spacings all over the place on different devices and platforms
 - Handle broken image links in the image viewer gallery, glitches out currently
 - In-article EPC map link logic needs to be improved (currently, clicking back navigates to home page)

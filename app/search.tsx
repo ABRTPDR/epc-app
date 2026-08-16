@@ -563,7 +563,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    gap: 16,
   },
   searchBar: {
     flexDirection: 'row',
@@ -578,7 +577,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.grey,
     marginHorizontal: 20,
-    marginTop: 16,
+    marginVertical: 16,
   },
   inputWrapper: {
     flex: 1,
@@ -669,6 +668,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 20,
     marginTop: 24,
+    marginBottom: 8,
   },
   filterLabel: {
     fontFamily: 'Lato',
@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 24,
     marginHorizontal: 16,
-    marginBottom: -8,
+    marginBottom: 8, // Gap between ('Recent Searches' and history items) and ('Results' and result cards)
     minHeight: 28, // To prevent 'RECENT SEARCHES' from jumping up when 'CLEAR ALL' button disappears
   },
   sectionTitle: {
@@ -736,7 +736,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 6,
     paddingHorizontal: 12,
-    marginHorizontal: 12,
+    marginHorizontal: 14,
     borderRadius: 12,
   },
   historyItemText: {

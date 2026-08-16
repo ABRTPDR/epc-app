@@ -27,6 +27,20 @@ import {
 import PrevIcon from '@/components/icons/PrevIcon';
 import NextIcon from '@/components/icons/NextIcon';
 
+// Force the Jetpack CDN to resize images on the edge server
+const optimiseJetpackUrl = (url: string | undefined, size: number) => {
+  if (!url) return null;
+  
+  // If it goes through the WP global CDN (i0.wp.com, i1.wp.com, etc.)
+  if (url.includes('.wp.com')) {
+    const baseUrl = url.split('?')[0]; // Strip the unnecessarily large ?fit params
+    // Use URL-encoded commas "%2C"
+    return `${baseUrl}?resize=${size}%2C${size}&ssl=1`;
+  }
+  
+  return url;
+};
+
 const htmlStyles = {
   body: { color: Colors.text, fontSize: 16, fontFamily: 'Lato', lineHeight: 26 },
   p: { marginBottom: 16 },
@@ -461,8 +475,9 @@ export default function ArticleScreen() {
     );
   }
 
-  // Formatting data
-  const thumbnailUrl = article._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+  // Intercept Jetpack URL and shrink to 800x800 for the article image, fallback to full size image
+  const thumbnailUrl = optimiseJetpackUrl(article.jetpack_featured_media_url, 800)
+    || article._embedded?.['wp:featuredmedia']?.[0]?.source_url;
   // Conditionally use URL image or local fallback
   const headerImageSource = thumbnailUrl 
       ? { uri: thumbnailUrl } 

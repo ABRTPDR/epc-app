@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Linking, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Linking, useWindowDimensions, ImageBackground } from 'react-native';
 import { router, Stack } from 'expo-router';
 import { Image } from 'expo-image';
 
@@ -11,12 +11,8 @@ import CFGraphic from '@/components/icons/CFGraphic';
 import CFGraphicBackground from '@/components/icons/CFGraphicBackground';
 import PressableRipple from '@/components/PressableRipple';
 
-// Calculate exact card dimensions for a 2-column grid
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SIDE_PADDING = 20;
 const COLUMN_GAP = 16;
-// Screen Width - Left/Right Padding - Center Gap, divided by 2 columns
-const CARD_WIDTH = (SCREEN_WIDTH - (SIDE_PADDING * 2) - COLUMN_GAP) / 2; 
 
 // Hardcoded asset map
 export const CF_COVERS: Record<string, any> = {
@@ -41,6 +37,14 @@ export const CF_COVERS: Record<string, any> = {
 };
 
 export default function CFIndexScreen() {
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
+  
+  // Determine whether 2 or 3 columns (768px is standard iPad/Tablet portrait width)
+  const numColumns = SCREEN_WIDTH >= 768 ? 3 : 2;
+  
+  // Calculate CF book card width dynamically
+  const totalGapSpace = COLUMN_GAP * (numColumns - 1);
+  const CARD_WIDTH = (SCREEN_WIDTH - (SIDE_PADDING * 2) - totalGapSpace) / numColumns;
   
   return (
     <View style={styles.container}>
@@ -77,7 +81,7 @@ export default function CFIndexScreen() {
             return (
               <PressableRipple 
                 key={index}
-                style={styles.bookCard}
+                style={[styles.bookCard, { width: CARD_WIDTH }]}
                 onPress={() => router.push({ pathname: '/cf/[year]', params: { year: issue.year, url: issue.driveUrl } })}
               >
                 <ImageBackground 
@@ -170,7 +174,6 @@ const styles = StyleSheet.create({
     rowGap: 24, 
   },
   bookCard: {
-    width: CARD_WIDTH,
     aspectRatio: 0.72, 
     borderRadius: 8, 
     overflow: 'hidden',
@@ -190,8 +193,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   coverPlaceholder: {
-    width: 150,
-    height: 190,
+    width: '100%',
     flex: 1, 
     backgroundColor: '#D9D9D9',
     marginBottom: 6,
@@ -199,8 +201,8 @@ const styles = StyleSheet.create({
     marginLeft: -2,
   },
   coverImage: {
-    width: 150,
-    height: 190,
+    width: '88%',
+    height: '88%',
     flex: 1,
     marginBottom: 6,
     borderRadius: 4,

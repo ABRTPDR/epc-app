@@ -398,12 +398,12 @@ export const BEP_CATALOG: Record<string, YearCatalog> = {
       }
     ]
   },
-  "2018": {
+  "2018 – Gegenpress": {
     issues: [
       { name: "Pre-fest", categoryId: 208 },
     ]
   },
-  "2017": {
+  "2017 – Communication Breakdown": {
     issues: [
       /*
       { name: "Pre-fest", categoryId: 203 },
@@ -411,21 +411,36 @@ export const BEP_CATALOG: Record<string, YearCatalog> = {
       {
         name: "Pre-fest",
         categoryId: 203,
-        excludedArticles: [ 1233, 1241, 1243, 1245, 1248, 1251, 1253, 1257, 1264, 1266, 1269, 1272, 1274, 1222, 1227, 1230, 1259, 1261, 1281 ], // Remaining articles excluding below
+        excludedArticles: [ 1222, 1227, 1230, 1233, 1257, 1253, 1245, 1248, 1251, 1259, 1261, 1241, 1243, 1269, 1264, 1272, 1266, 1274, 1281 ], // Remaining articles excluding below
       },
       {
-        name: "Matches",
+        name: "Issue Zero",
         categoryId: 0,
-        includedArticles: [ 1233, 1241, 1243, 1245, 1248, 1251, 1253, 1257, 1264, 1266, 1269, 1272, 1274 ], // [ (Volleyball Boys’ BITS A vs MRIU – 21 September 2017, 9:45 PM), Boys’ Football – BITS vs. GSB, Girls’ Football – BITS vs. MODY Univ., Hockey – BITS vs BITS Alumni, Boys’ Basketball – BITS Pilani vs. BITS Goa, Squash – Manipal vs. BITS A, Tennis Boys’ – BITS Pilani A vs. Manipal, Snooker – BITS vs. GSB, Lawn Tennis Girls, Taekwondo, Squash – BITS A vs. IIT Delhi, Boys’ Football – BITS vs. Venky’s, Chess – Match Showcase ]
+        includedArticles: [ 1222, 1227 ], // [ BOSM – A rundown, BOSM for the non-sports person ]
       },
       {
-        name: "Communication Breakdown",
+        name: "Issue One",
         categoryId: 0,
-        includedArticles: [ 1222, 1227, 1230, 1259, 1261, 1281 ], // [ BOSM – A rundown, BOSM for the non-sports person, Interview with the Chief Guest, Tanvie Hans – A talk and an interview, Rotunda Events, BOSM – An Ode To The Future ]
+        includedArticles: [ 1230, 1233, 1257, 1253, 1245, 1248, 1251 ], // [ Interview with the Chief Guest, (Volleyball Boys’ BITS A vs MRIU – 21 September 2017, 9:45 PM), Snooker – BITS vs. GSB, Tennis Boys’ – BITS Pilani A vs. Manipal, Hockey – BITS vs BITS Alumni, Boys’ Basketball – BITS Pilani vs. BITS Goa, Squash – Manipal vs. BITS A,  ]
+      },
+      {
+        name: "Issue Two",
+        categoryId: 0,
+        includedArticles: [ 1259, 1261, 1241, 1243 ], // [ Tanvie Hans – A talk and an interview, Rotunda Events, Boys’ Football – BITS vs. GSB, Girls’ Football – BITS vs. MODY Univ., ]
+      },
+      {
+        name: "Issue Three",
+        categoryId: 0,
+        includedArticles: [ 1269, 1264, 1272, 1266, 1274 ], // [ Squash – BITS A vs. IIT Delhi, Lawn Tennis Girls, Boys’ Football – BITS vs. Venky’s, Taekwondo, Chess – Match Showcase ]
+      },
+      {
+        name: "Issue Four",
+        categoryId: 0,
+        includedArticles: [ 1281 ], // [ BOSM – An Ode To The Future ]
       },
     ]
   },
-  "2016": {
+  "2016 – CalvinBall": {
     issues: [
       /*
       { name: "Pre-fest", categoryId: 200 },
@@ -450,9 +465,12 @@ export const BEP_YEARS_ORDER = [
   "2023",
   "2022",
   "2019 – Specktator Mode",
-  "2018",
-  "2017",
-  "2016",
+  "2018 – Gegenpress",
+  "2017 – Communication Breakdown",
+  "2016 – CalvinBall",
+  // "2015 – Zlatanera",
+  // "2014 – Zeitgeist",
+  // "2012 – Ten",
 ];
 
 export const OEP_CATALOG: Record<string, YearCatalog> = {

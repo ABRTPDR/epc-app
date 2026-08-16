@@ -7,6 +7,7 @@ import { Directory, Paths } from 'expo-file-system';
 import { Image } from 'expo-image';
 import { useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
+import Constants from 'expo-constants';
 
 import Colors from '@/constants/Colors';
 import BackButton from '@/components/BackButton';
@@ -128,7 +129,7 @@ export default function SettingsScreen() {
       </ScrollView>
 
       <View style={styles.bottomContent}>
-        <Text style={styles.textBold}>EPC App, v0.3.0</Text>
+        <Text style={styles.textBold}>EPC App, v{Constants.expoConfig?.version ?? 'Unknown'}</Text>
         <Text style={styles.text}>Developed with ❤️ by Abhirup Tapadar</Text>
         <Text style={styles.textLicenses} onPress={() => router.push('/licenses')}>Open-source licenses</Text>
       </View>

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent, ActivityIndicator } from 'react-native';
+import { useState, useRef, useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent, ActivityIndicator, Animated, Easing } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -164,21 +164,78 @@ function TFPRecentArticles() {
 export default function ExploreScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
-
   // Total screen width minus 20px side margins
   const cardWidth = width - 40; 
-
   // Track active carousel dot
   const [activeFestPress, setActiveFestPress] = useState(0);
+  // Refs to control auto-swipe and track the true index
+  const scrollViewRef = useRef<ScrollView>(null);
+  const activeFestPressRef = useRef(0);
+  // Track actual timer so we can kill it when handing over swipe control to manual swipe
+  const autoScrollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Animated Value to mathematically calculate the scroll speed
+  const animatedScrollX = useRef(new Animated.Value(0)).current;
+  // Ref to track physical scroll position (for easing animation)
+  const exactScrollXRef = useRef(0);
 
+  // Bind the Animated Value to move the ScrollView
+  useEffect(() => {
+    // Every time a new micro-pixel calculated, move the ScrollView to it
+    const listenerId = animatedScrollX.addListener(({ value }) => {
+      scrollViewRef.current?.scrollTo({ x: value, animated: false }); // animated: false to disable OS scroll animation over which we have no speed control
+    });
+    return () => animatedScrollX.removeListener(listenerId);
+  }, []);
+
+  // Secret ref synced with the manual card swipes
   const onFestPressScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    // Log the physical sub-pixel
+    const xOffset = event.nativeEvent.contentOffset.x;
+    exactScrollXRef.current = xOffset;
     const slideSize = event.nativeEvent.layoutMeasurement.width;
-    const index = event.nativeEvent.contentOffset.x / slideSize;
+    const index = xOffset / slideSize;
     const roundIndex = Math.round(index);
     if (roundIndex !== activeFestPress) {
       setActiveFestPress(roundIndex);
+      activeFestPressRef.current = roundIndex; 
     }
   };
+
+  const startAutoScroll = () => {
+    stopAutoScroll(); 
+    
+    autoScrollTimer.current = setInterval(() => {
+      // Starts from the exact physical pixel to prevent jitter in animation
+      animatedScrollX.setValue(exactScrollXRef.current);
+      // Calculate the destination
+      const nextIndex = activeFestPressRef.current === 2 ? 0 : activeFestPressRef.current + 1;
+      
+      Animated.timing(animatedScrollX, {
+        toValue: nextIndex * cardWidth,
+        duration: 480, // Auto-scroll swipe animation duration
+        easing: Easing.inOut(Easing.sin), // Seems to be the smoothest curve profile
+        useNativeDriver: false, 
+      }).start();
+
+      // Manually update the dot indicator to prevent the onScroll event from forcing a heavy component re-render mid-animation
+      setActiveFestPress(nextIndex);
+      activeFestPressRef.current = nextIndex;
+      
+    }, 4000); // Auto-scroll every 4000ms
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollTimer.current) {
+      clearInterval(autoScrollTimer.current);
+      autoScrollTimer.current = null;
+    }
+  };
+
+  // Start the timer when the screen first loads, and clean it up if user's finger leaves fest card
+  useEffect(() => {
+    startAutoScroll();
+    return () => stopAutoScroll();
+  }, [cardWidth]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -239,11 +296,14 @@ export default function ExploreScreen() {
           {/* Swipable carousel body (routes to particular fest press) */}
           <View style={{ flex: 1 }}>
             <ScrollView
+              ref={scrollViewRef}
               horizontal
               pagingEnabled
               showsHorizontalScrollIndicator={false}
               onScroll={onFestPressScroll}
               scrollEventThrottle={16}
+              onScrollBeginDrag={stopAutoScroll} // Kills the timer when manual swipe occurs
+              onScrollEndDrag={startAutoScroll}  // Starts fresh timer when finger lifts
             >
               {/* APOGEE Card */}
               <PressableRipple 
@@ -349,7 +409,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingBottom: 40,
+    paddingBottom: 100,
     gap: 12,
   },
   title: {
@@ -375,8 +435,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   stylisedSearch: {
-  bottom: -8,
-  zIndex: 1,
+    bottom: -8,
+    zIndex: 1,
   },
   searchInactiveText: {
     fontSize: 20,
