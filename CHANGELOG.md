@@ -23,7 +23,7 @@
 - Fixed broken nav bar layout on tablets
 - UI/UX polish
 
-## v0.3.0
+## v0.4.0
 - Changes implemented from TODO:
     - Bug fixed: CF thumbnails break on tablets
 - Made article image loading faster on all screens by loading required dimensions only from CDN
