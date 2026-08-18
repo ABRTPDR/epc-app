@@ -27,5 +27,6 @@
 - Changes implemented from TODO:
     - Bug fixed: CF thumbnails break on tablets
 - Made article image loading faster on all screens by loading required dimensions only from CDN
+- Made article card loading faster on all screens by memoising the components
 - Added auto-swiping animation on 'Fest Presses' card in 'Explore'
 - UI/UX polish

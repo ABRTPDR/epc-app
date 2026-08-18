@@ -24,17 +24,31 @@ wpApi.interceptors.response.use(
 );
 
 export const fetchArticleById = async (id: string): Promise<EPCArticle> => {
-  const response = await wpApi.get(`/posts/${id}?_embed`);
-  return response.data;
+  try {
+    const response = await wpApi.get(`/posts/${id}?_embed`);
+    return response.data;
+  } catch (error: any) {
+    // If post not found (404), fallback to pages endpoint
+    if (error.response?.status === 404) {
+      const pageResponse = await wpApi.get(`/pages/${id}?_embed`);
+      return pageResponse.data;
+    }
+    throw error;
+  }
 };
 
 export const fetchArticleBySlug = async (slug: string): Promise<EPCArticle> => {
-  // WordPress returns an array when querying by slug
   const response = await wpApi.get(`/posts?slug=${slug}&_embed`);
-  if (!response.data || response.data.length === 0) {
+  // WordPress returns an array when querying by slug
+  if (response.data && response.data.length > 0) {
+    return response.data[0];
+  }
+  // If post array is empty, fallback to pages endpoint
+  const pageResponse = await wpApi.get(`/pages?slug=${slug}&_embed`);
+  if (!pageResponse.data || pageResponse.data.length === 0) {
     throw new Error("Article not found");
   }
-  return response.data[0]; 
+  return pageResponse.data[0];
 };
 
 // Define shape of WordPress JSON payload

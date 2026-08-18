@@ -1,3 +1,9 @@
+/* VERY VERY IMPORTANT:
+WP category IDs MUST be reused in at least one of its category/subcategory definitions
+For example, see "AEP 2020" below, where instead of making "APOGEE 2020: The Glitch Repository" have categoryId=0 and then includedArticles, it takes own parent's ID then excludedArticles
+Else, glitches out filtering by press category when searching for articles in-app
+*/
+
 // Standard issue eg. TFP/2024/Issue Two
 export interface Issue {
 	name: string;
@@ -246,7 +252,7 @@ export const AEP_CATALOG: Record<string, YearCatalog> = {
       { name: "Pre-fest",
         children: [
           { name: "Speakers", categoryId: 0, includedArticles: [ 4806, 4812 ] }, // [ Zainab Nagin Cox, Zed A. Shaw ]
-          { name: "APOGEE 2020: The Glitch Repository", categoryId: 0, includedArticles: [ 4723, 4719, 4713 ] }, // [ The Calamity at Kumbh, The Strangulation of the Sea, The Cost of Water ]
+          { name: "APOGEE 2020: The Glitch Repository", categoryId: 181, excludedArticles: [ 5231, 4806, 4812 ] }, // Remaining articles excluding above and below
         ]
       },
       {
@@ -267,8 +273,8 @@ export const AEP_CATALOG: Record<string, YearCatalog> = {
           { name: "What to Expect", categoryId: 0, includedArticles: [ 3372 ] }, // [ Kernel Events ]
           { name: "KnowYourAPOGEE", categoryId: 0, includedArticles: [ 3276, 3282, 3291, 3294, 3299 ] }, // [ Papyrus Trails, KnowYourAPOGEE: The First One, KnowYourAPOGEE: 1989, KnowYourAPOGEE: An Eventful Summary, KnowYourAPOGEE: Speakers and Shows ]
           { name: "Speakers", categoryId: 0, includedArticles: [ 3102, 3138, 3144, 3147, 3150, 3268, 3272 ] }, // [ Ashwin Sanghi, Rakesh Sharma, Vikramaditya Motwane, Alan Emtage, Arun Shourie, Lt Gen. S.S. Hasabnis, Stephen P. Morse ]
-          { name: "CoStAA", categoryId: 0, includedArticles: [ 3356, 3350, 3332, 3344, 3347, 3353, 3365, 3359, 3362,  ]}, // [ President – Satyansh Rai, GenSec – Akash Singh, ADP – Aditya Pawar, Controls – Apoorv Saxena, DVM – Megh Thakkar, PCr-APOGEE – Parv Panthari, PEP – Anirudh Singla, RecN’Acc – Yatharth Singh, Sponz – Anushka Pathak ]
-          { name: "Winning Abstracts from APOGEE 2018", categoryId: 0, includedArticles: [ 3302, 3305, 3308, 3311, 3314, 3317, 3320, 3323, 3327 ] }, // [ Solutions for the Effects of Urbanization on Birds, Reinforced Thermoplastic Constructions, Optimizing the ratio of number of tubes in PCNTFET to NCNTFET for digital circuits, Analysis and Design of Vehicle Dynamics of Permanent-magnet Levitation–based Hyperloop System., Analyzing gas sensing MEMS cantilever with distinctive geometries of comparable dimensions, CFD Analysis of Badminton Shuttlecock, Continuous Minutiae Template Learning for Accurate Fingerprint Matching, Optimisation of cleaning and recovery in an oil spill, Garbage Exterminating and Auto Fuelling System (GExAF) ]
+          { name: "CoStAA", categoryId: 0, includedArticles: [ 3356, 3350, 3332, 3344, 3347, 3353, 3365, 3359, 3362 ]}, // [ President – Satyansh Rai, GenSec – Akash Singh, ADP – Aditya Pawar, Controls – Apoorv Saxena, DVM – Megh Thakkar, PCr-APOGEE – Parv Panthari, PEP – Anirudh Singla, RecN’Acc – Yatharth Singh, Sponz – Anushka Pathak ]
+          { name: "Winning Abstracts from APOGEE 2018", categoryId: 180, excludedArticles: [ 3372, 3276, 3282, 3291, 3294, 3299, 3102, 3138, 3144, 3147, 3150, 3268, 3272, 3356, 3350, 3332, 3344, 3347, 3353, 3365, 3359, 3362 ]}, // Remaining articles excluding above
         ]
       }
     ]
@@ -285,7 +291,7 @@ export const AEP_CATALOG: Record<string, YearCatalog> = {
           { name: "What to Expect", categoryId: 0, includedArticles: [ 1965, 2031, 1934, 1840, 2027, 1979 ] }, // [ Kernel Events, Event Descriptions, Speakers in APOGEE 2018, Exhibitions, Paper Presentation Guide, Project Presentation Guide ]
           { name: "APOGEE 2018: A Cybernetic Vision", categoryId: 0, includedArticles: [ 1953, 1957, 1975 ] }, // [ The Master Race To Colonisation, The Replacement Argument, Consequences of Planet Colonisation ]
           { name:"CoStAA", categoryId: 0, includedArticles: [ 1999, 1990, 2002, 1983, 1993, 2012, 2009, 1996, 2006 ] }, // [ President – Bharatharatna Puli, General Secretary – Shivam Jindal, ADP – Vaibhav Jain, Controls – Himangshu Baid, DVM – Hitesh Raghuvanshi, PCr APOGEE – Alanckrit Jain, PEP – Abhishek Gupta, RecNAcc – Anshuman Sharma, Sponz – Keshav Jain ]
-          { name: "Winning Abstracts from APOGEE 2017", categoryId: 0, includedArticles: [ 1880, 1878, 1876, 1874, 1872, 1870, 1868, 1866, 1864, 1860, 1858, 1856, 1854, 1852, 1850, 1845 ] }, // [ Social & Developmental Psychology of Game of Thrones Viewership amongst Youth, Investigations of gravitational wave recoil in binary black hole systems, Women as Seen Through Tagore and Shakespeare’s Works, Ornithopter, Alternate fuel-punga+diesel combination, Near Field Scanning Optical Imaging of Gold Nanoparticles in the Sub-Wavelength Limit, Why is the discovery of Ideonella Sakaiensis revolutionary?, ALGAE: THE FUTURE SAVIOR, TIME SYNCHRONISATION OF MOBILE MAPPING SYSTEM: AN INNOVATIVE APPROACH, Interfacing Graphical LCD with Microcontroller based measurement system, Baseband Pulse Shaping for GMSK Modulation, Analytical Investigation of Delays in 2D MoS2 based lateral BJTs, Predicting Stocks Using Neural Network with Denoising and Hodrick-Prescott Filter (Hp Filter), Conceptualization and Design of Flight Software for On-board Computer System of Small Satellites, Advanced Response Formats for REST Model, Evaluation of Stone Mastic Asphalt using Jute Fibre as Low Cost Fibre ]
+          { name: "Winning Abstracts from APOGEE 2017", categoryId: 179, excludedArticles: [ 1835, 1965, 2031, 1934, 1840, 2027, 1979, 1953, 1957, 1975, 1999, 1990, 2002, 1983, 1993, 2012, 2009, 1996, 2006, 2044, 2046, 2048, 2050, 2052, 2054, 2056, 2074, 2058, 2060, 2071, 2076, 2066, 2068 ] }, // Remaining articles except above and below
         ]
       },
       {
@@ -440,7 +446,7 @@ export const BEP_CATALOG: Record<string, YearCatalog> = {
       },
     ]
   },
-  "2016 – CalvinBall": {
+  "2016 – Calvinball": {
     issues: [
       /*
       { name: "Pre-fest", categoryId: 200 },
@@ -455,6 +461,11 @@ export const BEP_CATALOG: Record<string, YearCatalog> = {
         categoryId: 200,
         excludedArticles: [ 653, 100, 103, 114, 125, 655, 137, 142, 147, 154, 158, 175, 180, 183, 201, 204 ], // Remaining articles excluding above
       },
+      {
+        name: "Fest Issues",
+        categoryId: 0,
+        includedArticles: [ 52, 643 ] // [ What is Calvinball?, About (a long, philosophical introduction to BEP) ]
+      },
     ]
   },
 }
@@ -467,7 +478,7 @@ export const BEP_YEARS_ORDER = [
   "2019 – Specktator Mode",
   "2018 – Gegenpress",
   "2017 – Communication Breakdown",
-  "2016 – CalvinBall",
+  "2016 – Calvinball",
   // "2015 – Zlatanera",
   // "2014 – Zeitgeist",
   // "2012 – Ten",
@@ -520,7 +531,7 @@ export const OEP_CATALOG: Record<string, YearCatalog> = {
       {
         name: "Pre-fest",
         categoryId: 226,
-        excludedArticles: [ 4389, 4405, 4410, 4436, 4431, 4426, 4472, 4468, 4455, 4460, 4464, 4581, 4491, 4503, 4495, 4499, 4509, 4598 ] // [ OEP'19 Issue Zero, Musings on Neon Noir, OEP'19 Issue One, Interview with Madhur Bhandarkar, Inauguration Review, BITS Pilani: The Neon to Pilani's Noir, OEP'19 Issue Two, Stage Play – Part One, Neon Noir: Neighbourhood Hot Takes, The Oasis Talk: Imtiaz Ali, Protest Out Of Waste, OEP'19 Issue Three, Sukhmanch Theatre, Oasis Quiz, Stage Play – Part Two, Street Play, Mr and Ms Oasis, OEP'19 Issue Four ]
+        excludedArticles: [ 4389, 4405, 4410, 4436, 4431, 4426, 4472, 4468, 4455, 4460, 4464, 4581, 4491, 4503, 4495, 4499, 4509, 4598 ] // Remaining articles excluding below
       },
       {
         name: "Issue Zero",
@@ -551,75 +562,80 @@ export const OEP_CATALOG: Record<string, YearCatalog> = {
   },
   "2018 – Memento Mori": {
     issues: [
-      { name: "Pre-fest", categoryId: 225 },
       /*
+      { name: "Pre-fest", categoryId: 225 },
+      */
       {
         name: "Pre-fest",
         children: [
           { name: "Oasis 2018: The Far Out Fest", categoryId: 0, includedArticles: [ 2577, 2595, 2618, 2627, 2631 ] }, // [ Ghosts of Oases Past, Origin Story: The Peace Symbol, Origin Story: 420, The Madrid Scene, Jejemon ]
-          { name: "StuCCA", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "Departments", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "Clubs and Associations", categoryId: 225, excludedArticles: [ 2577, 2595, 2618, 2627, 2631,  ] }, // Remaining articles excluding above and below
+          { name: "StuCCA", categoryId: 0, includedArticles: [ 2798, 2752, 2746, 2749, 2784, 2790, 2781, 2795 ] }, // [ President, General Secretary, (Art, Design, & Publicity), Sponsorship & Marketing, Publications and Correspondence, Department of Visual Media, Controls, Reception & Accommodation ]
+          { name: "Departments", categoryId: 0, includedArticles: [ 2718, 2722, 2733, 2724, 2727, 2736, 2730 ] }, // [ Informalz, Audi Force, Firewallz, Department of Live Events, Department of Photography, Stage Controls, Department of Theatre ]
+          { name: "Clubs and Associations", categoryId: 225, excludedArticles: [ 2577, 2595, 2618, 2627, 2631, 2798, 2752, 2746, 2749, 2784, 2790, 2781, 2795, 2718, 2722, 2733, 2724, 2727, 2736, 2730, 2812, 2814, 2816, 2835, 2840, 2842, 2844, 2847, 2849, 2851, 2853, 2855, 2857, 2859, 2861, 2863, 2867, 2871, 2874, 2876, 2878, 2881, 2883, 2885, 2887, 2888, 2890, 2892, 2894, 2896, 2898, 2900, 2903, 2905, 2907, 2909, 2911, 2913, 2915 ] }, // Remaining articles excluding above and below
         ]
       },
       {
         name: "Issue Zero",
         categoryId: 0,
-        includedArticles: [  ], // [  ]
+        includedArticles: [ 2812, 2814, 2816 ], // [ The Road To Oasis, History of the Hall of Fame, Film Festival ]
       },
       {
         name: "Issue One",
         categoryId: 0,
-        includedArticles: [  ], // [  ]
+        includedArticles: [ 2835, 2840, 2842 ], // [ Oasis Quiz, Prof Shows: A Preview, Hall of Fame: Jack Kerouac ]
       },
       {
         name: "Issue Two",
         categoryId: 0,
-        includedArticles: [  ], // [  ]
+        includedArticles: [ 2844, 2847, 2849, 2851, 2853, 2855, 2857, 2859, 2861, 2863, 2867 ], // [ Inauguration Ceremony: A Review, BLAB: A Review, Rap Wars: A Review, Tango Night: A Review, Guthrie Govan: A Review, (Beg, Borrow, Steal), Stage Play: Day 1, Counterculture Hall of Fame: Paul Krassner, An Interview With Abhishek Chaubey, Food Stalls: A Comprehensive Menu, How To Score This Oasis: A Deterministic Freakin’ Automaton ]
       },
       {
         name: "Issue Three",
         categoryId: 0,
-        includedArticles: [  ], // [  ]
+        includedArticles: [ 2871, 2874, 2876, 2878, 2881, 2883, 2885, 2887, 2888, 2890, 2892, 2894, 2896, 2898 ], // [ Tarang: A Review, Axetacy: A Review, Choreo: A Review, Desert Duel, Entertainment Quiz, Filmy Muqabala, Hindi Prof Show, An Interview with IndoSoul, IndoSoul: A Review, Nomad: An Interview With A Travel Blogger, Stage Play: Day 2, Street Play, Treasure Hunt, Tambola Tales ]
       },
       {
         name: "Issue Four",
         categoryId: 0,
-        includedArticles: [  ], // [  ]
+        includedArticles: [ 2900, 2903, 2905, 2907, 2909, 2911, 2913, 2915 ], // [ EDM Night, Hall of Fame: Bob Marley, Hansraj Projekt/Sab-Culture: An Interview, Mock Parliament, Diary of a First Year: From the Press, Razzmatazz: A Review, Rocktaves: A Review, Street Dance: A Review ]
       },
-      */
     ]
   },
   "2017": {
     issues: [
-      { name: "Pre-fest", categoryId: 224 },
       /*
+      { name: "Pre-fest", categoryId: 224 },
+      */
       {
         name: "Pre-fest",
         children: [
-          { name: "Oasis 2017: Realms of Fiction", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "StuCCA", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "Departments", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "Clubs and Associations", categoryId: 224, excludedArticles: [  ] }, // Remaining articles excluding above
+          { name: "Oasis 2017: Realms of Fiction", categoryId: 0, includedArticles: [ 1289, 1305, 1309, 1314, 1428, 1443, 1448, 1486 ] }, // [ Reality Stranger Than Fiction? Try Again., Sin City, Life Is Strange: The Game (And the cultural revolution it hints at), Plays in the Modern World, Realms of Fiction, Horsing Around, On the Evolution and Appeal of Manga, Music and Films ]
+          { name: "StuCCA and CRC", categoryId: 0, includedArticles: [ 1671, 1588, 1682, 1529, 1534, 1570, 1638, 1595, 1659 ] }, // [ Prez, GenSec, ADP, Sponz, Controls, DVM, PCr, Rec’n’Acc, CRC ]
+          { name: "Departments", categoryId: 0, includedArticles: [ 1490, 1498, 1504, 1508, 1545, 1579, 1648, 1663, 1668 ] }, // [ Audi Force, DoT, Informalz, Lights, Sounds, Firewallz, DoPy, Backstage, DLE ]
+          { name: "Clubs and Associations", categoryId: 224, excludedArticles: [ 1289, 1305, 1309, 1314, 1428, 1443, 1448, 1486, 1671, 1588, 1682, 1529, 1534, 1570, 1638, 1595, 1659, 1490, 1498, 1504, 1508, 1545, 1579, 1648, 1663, 1668 ] }, // Remaining articles excluding above
         ]
       },
-      */
     ]
   },
   "2016 – Mythology": {
     issues: [
-      { name: "Pre-fest", categoryId: 223 },
       /*
+      { name: "Pre-fest", categoryId: 223 },
+      */
       {
         name: "Pre-fest",
         children: [
-          { name: "Oasis 2016: Of Gods and Men", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "StuCCA", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "Departments", categoryId: 0, includedArticles: [  ] }, // [  ]
-          { name: "Clubs and Associations", categoryId: 223, excludedArticles: [  ] }, // Remaining articles excluding above
+          { name: "Oasis 2016: Of Gods and Men", categoryId: 0, includedArticles: [ 763, 765, 767, 757, 759, 761, 769 ] }, // [ The Oedipus Complex, Should I Care About Mythology Today, Mercy Or Misery – The Impetus Of The Gods, Broadway Refuted – The Stage Where it Never Happened, Broadway Refuted – The Stage Where it Happened, (The Theseus Paradox- If Gods change with the times, are they the same), Led Zeppelin- The Hammer of the Gods ]
+          { name: "StuCCA", categoryId: 0, includedArticles: [ 796, 833, 835, 842, 844, 846, 849, 853 ] }, // [ General Secretary – Manas Luthra, (Department of Art, Design and Publicity), Department of Controls, Department of Publications and Correspondence, Department of Reception and Accommodation, Department of Sponsorship and Marketing, Department of Stage Controls, Department of Visual Media ]
+          { name: "Departments", categoryId: 0, includedArticles: [ 838, 851, 779, 794, 816, 840 ] }, // [ Department of Live Events, Department of Theatre, Informalz, Firewallz, Sounds, Department Of Photography ]
+          { name: "Clubs and Associations", categoryId: 223, excludedArticles: [ 763, 765, 767, 757, 759, 761, 769, 796, 833, 835, 842, 844, 846, 849, 853, 838, 851, 779, 794, 816, 840, 771, 773 ] }, // Remaining articles excluding above
         ]
       },
-      */
+      {
+        name: "Fest Issues",
+        categoryId: 0,
+        includedArticles: [ 771, 773 ] // [ Oasis Through The Ages, An Open Discussion With Amish Tripathi ]
+      },
     ]
   },
 }

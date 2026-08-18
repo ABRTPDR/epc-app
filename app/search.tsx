@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, memo, useCallback } from 'react';
 import { View, TextInput, StyleSheet, FlatList, ActivityIndicator, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -58,11 +58,6 @@ function getCategoryIdsForFilters(activeFilters: string[]): number[] {
   };
 
   activeFilters.forEach((filterKey) => {
-    // Include AEP categories not invoked in Publications.ts content
-    if (filterKey === 'AEP') {
-      ids.push(178, 179, 180, 181);
-    }
-
     const catalog = catalogMap[filterKey];
     if (!catalog) return;
 
@@ -122,6 +117,30 @@ function findArticleClassification(categoryIds: number[], articleId: number) {
   return null;
 }
 
+// Blocklist of post/page IDs that should not appear in search results
+const SEARCH_BLOCKLIST = [
+  2, // Sample Page
+  24, // Welcome
+  25, // Blog
+  532, // BOSM
+  534, // Oasis
+  576, // Archives
+  644, // Contact Us
+  645, // Our Articles
+  681, // Home
+  723, // Issue 0
+  2607, // The Far Out Fest
+  2609, // Behind The Scenes
+  5236, // The Team
+  5271, // About
+  5272, // Contact Us
+  5503, // BITS Online
+  7020, // Forum
+];
+
+// Hardcoded IDs that belong to TFP but lack the proper categorisation in WordPress
+const TFP_INCLUSIONS = [5349, 5376, 5382, 5386];
+
 // Accepts 'page' parameter, hardcoded per_page=20
 const searchArticles = async (
   searchTerm: string,
@@ -146,10 +165,65 @@ const searchArticles = async (
     }
   }
 
-  const response = await wpApi.get(`/posts?_embed&search=${encodedSearch}&page=${page}&per_page=20${categoryParam}`);
+  // Fetch posts (with category filters if applicable)
+  const postsPromise = wpApi.get(`/posts?_embed&search=${encodedSearch}&orderby=date&page=${page}&per_page=20${categoryParam}`)
+    .catch(() => ({ data: [], headers: { 'x-wp-total': '0' } }));
+    
+  // Fetch pages (categories cannot be passed to /pages, so fetch all matching text first)
+  const pagesPromise = wpApi.get(`/pages?_embed&search=${encodedSearch}&orderby=date&page=${page}&per_page=20`)
+    .catch(() => ({ data: [], headers: { 'x-wp-total': '0' } }));
+
+  const includedPromise = wpFilters.includes('TFP')
+    ? wpApi.get(`/posts?_embed&search=${encodedSearch}&include=${TFP_INCLUSIONS.join(',')}&orderby=date&page=${page}&per_page=20`)
+        .catch(() => ({ data: [], headers: { 'x-wp-total': '0' } }))
+    : Promise.resolve({ data: [], headers: { 'x-wp-total': '0' } });
+
+  const [postsResponse, pagesResponse, includedResponse] = await Promise.all([postsPromise, pagesPromise, includedPromise]);
+
+  // Merge the hardcoded posts into the standard posts array (preventing duplicates just in case)
+  let combinedPosts = [...postsResponse.data];
+  includedResponse.data.forEach((incItem: EPCArticle) => {
+    if (!combinedPosts.some(p => p.id === incItem.id)) {
+      combinedPosts.push(incItem);
+    }
+  });
+
+  // Remove blocklist articles and adjust result count
+  const initialPostsCount = combinedPosts.length;
+  combinedPosts = combinedPosts.filter((item: EPCArticle) => !SEARCH_BLOCKLIST.includes(item.id));
+  const blockedPostsCount = initialPostsCount - combinedPosts.length;
+
+  const initialPagesCount = pagesResponse.data.length;
+  pagesResponse.data = pagesResponse.data.filter((item: EPCArticle) => !SEARCH_BLOCKLIST.includes(item.id));
+  const blockedPagesCount = initialPagesCount - pagesResponse.data.length;
+
+  // Add the total from the hardcoded fetch to the posts total
+  let postsTotal = parseInt(postsResponse.headers['x-wp-total'] || '0', 10) 
+                 + parseInt(includedResponse.headers['x-wp-total'] || '0', 10) 
+                 - blockedPostsCount;
+  let pagesTotal = parseInt(pagesResponse.headers['x-wp-total'] || '0', 10) - blockedPagesCount;
+  
+  let combinedItems = [...pagesResponse.data, ...combinedPosts];
+  let combinedTotal = postsTotal + pagesTotal;
+
+  // If WP filters active, manually filter returned pages to ensure they belong to the selected fest presses
+  if (wpFilters.length > 0 && pagesResponse.data.length > 0) {
+      const activePageItems = pagesResponse.data.filter((pageItem: EPCArticle) => {
+        const classification = findArticleClassification(pageItem.categories || [], pageItem.id);
+        return classification && wpFilters.includes(classification.press);
+      });
+      
+      const droppedPagesCount = pagesResponse.data.length - activePageItems.length;
+      combinedTotal -= droppedPagesCount;
+
+      combinedItems = [...activePageItems, ...combinedPosts];
+  }
+
+  combinedItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   return {
-    items: response.data,
-    total: parseInt(response.headers['x-wp-total'] || '0', 10)
+    items: combinedItems,
+    total: combinedTotal
   };
 
 };
@@ -175,6 +249,55 @@ const optimiseJetpackUrl = (url: string | undefined, size: number) => {
   
   return url;
 };
+
+// Memoised card component
+const SearchResultCard = memo(({ item }: { item: EPCArticle }) => {
+  const router = useRouter(); // Grab router locally for the pressable
+
+  const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 200)
+    || item._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.thumbnail?.source_url
+    || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+
+  const headerImageSource = thumbnailUrl 
+    ? { uri: thumbnailUrl } 
+    : require('@/assets/images/Fallback.png');
+  
+  const categoryIds = item.categories || [];
+  const classification = findArticleClassification(categoryIds, item.id);
+  
+  const cleanYear = classification?.year.split(' –')[0] || '';
+
+  let classificationText = 'Article';
+  if (classification) {
+    const words = classification.issueName.split(/([\s\-]+)/); 
+    const shortIssueName = words.slice(0, 3).join('') + (words.length > 3 ? '...' : '');
+    classificationText = `${classification.press} ${cleanYear} / ${shortIssueName}`;
+  }
+
+  const publishDate = new Date(item.date).toLocaleDateString('en-US', {
+    month: 'short', year: 'numeric'
+  });
+
+  const metaString = `${classificationText}  ·  ${publishDate}`.toUpperCase();
+
+  return (
+    <PressableRipple style={styles.resultCard} onPress={() => router.push(`/article/${item.id}`)}>
+      <Image 
+        source={headerImageSource} 
+        style={styles.resultImage}
+        contentFit="cover"
+      />
+      <View style={styles.resultTextContainer}>
+        <Text style={styles.metaText} numberOfLines={1} ellipsizeMode="tail">
+          {metaString}
+        </Text>
+        <Text style={styles.resultTitle} numberOfLines={2}>
+          {decode(item.title.rendered)}
+        </Text>
+      </View>
+    </PressableRipple>
+  );
+});
 
 export default function SearchExpandedScreen() {
   const router = useRouter();
@@ -312,7 +435,12 @@ export default function SearchExpandedScreen() {
   });
 
   // as EPCArticle[]: Tell TS what array holds
-  const searchResults = (data?.pages.flatMap(page => page.items) as EPCArticle[]) || [];
+  const searchResults = useMemo(() => {
+    const allItems = (data?.pages.flatMap(page => page.items) as EPCArticle[]) || [];
+    // Re-sort the entire aggregated list globally to destroy chunk boundaries!
+    return allItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [data?.pages]);
+
   const totalWpResults = data?.pages[0]?.total || 0;
   const totalCombinedResults = totalWpResults + matchedCFIssues.length;
 
@@ -343,74 +471,10 @@ export default function SearchExpandedScreen() {
     );
   };
 
-  const renderSearchResult = ({ item }: { item: EPCArticle }) => {
-    /* Previous (slow) logic: full size thumbnails
-    // Extract article image
-    const thumbnailUrl = item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-    // Conditionally use URL image or local fallback
-    const headerImageSource = thumbnailUrl 
-      ? { uri: thumbnailUrl } 
-      : require('@/assets/images/Fallback.png');
-    */
-
-    // Intercept Jetpack media URL and shrink to 200x200 for the 100x100 result card thumbnail
-    const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 200)
-      || item._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.thumbnail?.source_url
-      || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-
-    // Conditionally use URL image or local fallback
-    const headerImageSource = thumbnailUrl 
-      ? { uri: thumbnailUrl } 
-      : require('@/assets/images/Fallback.png');
-    
-    // Calculate the classification
-    const categoryIds = item.categories || [];
-    const classification = findArticleClassification(categoryIds, item.id);
-    
-    // Strip special fest names (eg. "2026 - The Skeumorph" to "2026")
-    const cleanYear = classification?.year.split(' –')[0] || '';
-
-    let classificationText = 'Article';
-    if (classification) {
-      // Split the string by spaces/hyphens
-      const words = classification.issueName.split(/([\s\-]+)/); // Instead of split(/[\s\-]+/), as now "Pre-fest" becomes ["Pre","-","fest"], so hyphen shows up in seearch result card classification
-      
-      // Output first two words and append '...' if third word exists
-      const shortIssueName = words.slice(0, 3).join('') + (words.length > 3 ? '...' : '');
-      classificationText = `${classification.press} ${cleanYear} / ${shortIssueName}`;
-    }
-
-    // Format date as eg. "Aug 29"
-    const publishDate = new Date(item.date).toLocaleDateString('en-US', {
-      month: 'short', year: 'numeric'
-    });
-
-    // Combine classification and date, make uppercase
-    const metaString = `${classificationText}  ·  ${publishDate}`.toUpperCase();
-
-    return (
-      <PressableRipple style={styles.resultCard} onPress={() => router.push(`/article/${item.id}`)}>
-        
-        <Image 
-          source={headerImageSource} 
-          style={styles.resultImage}
-          contentFit="cover"
-        />
-        
-        <View style={styles.resultTextContainer}>
-          {/* Metadata string: category and date */}
-          <Text style={styles.metaText} numberOfLines={1} ellipsizeMode="tail">
-            {metaString}
-          </Text>
-          
-          <Text style={styles.resultTitle} numberOfLines={2}>
-            {decode(item.title.rendered)}
-          </Text>
-        </View>
-
-      </PressableRipple>
-    );
-  };
+  // Cached render function
+  const renderSearchResult = useCallback(({ item }: { item: EPCArticle }) => {
+    return <SearchResultCard item={item} />;
+  }, []); // Empty dependency array to ensure function never recreated
 
   return (
     <SafeAreaView style={styles.container} >

@@ -18,7 +18,7 @@ export default function TfpScreen() {
           <SearchButton onPress={() => router.push({ pathname: '/search', params: { filters: 'TFP' } })} color={Colors.grey} />
           <Text style={styles.headerTitle}>THE FINE PRINT</Text>
           <Text style={styles.headerDescription}>
-            The campus newsletter. New{'\n'}issues every other month. Get{'\n'}up to speed on words, words,{'\n'}elections, and more.
+            The campus newsletter by the EPC. New issues every other{'\n'}month. Get up to speed on the{'\n'}BITSian experience!
           </Text>
           <View style={styles.watermarkContainerEPC}>
             <EPCGraphic width={218} />

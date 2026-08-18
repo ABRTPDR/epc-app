@@ -136,7 +136,7 @@ const TEAM_DATA = [
   {
     year: '2010',
     members: [
-      'IG', 'Angad', 'Manickam', 'Mohit', 'Pranita', 'Spriha', 'Siddhant', 'Tanya', 'Vishala', 'Shuja'
+      'Angad', 'IG', 'Manickam', 'Mohit', 'Pranita', 'Shuja', 'Siddhant', 'Spriha', 'Tanya', 'Vishala'
     ]
   },
   {
@@ -154,7 +154,7 @@ const TEAM_DATA = [
   {
     year: '2007',
     members: [
-      'Rajat', 'Abhishek', 'Hema', 'Neeti', 'Rajarshi', 'Sarthak', 'Sonal', 'Soumya', 'Udit'
+      'Abhishek', 'Hema', 'Neeti', 'Rajarshi', 'Rajat', 'Sarthak', 'Sonal', 'Soumya', 'Udit'
     ]
   },
 ];

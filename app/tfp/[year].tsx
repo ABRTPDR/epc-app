@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, memo, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { useLocalSearchParams, Stack, router } from 'expo-router';
+import { useLocalSearchParams, Stack, router, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Image } from 'expo-image';
@@ -27,6 +27,65 @@ const optimiseJetpackUrl = (url: string | undefined, size: number) => {
   
   return url;
 };
+
+const cleanExcerpt = (htmlString?: string) => {
+  if (!htmlString) return '';
+  // Strip HTML tags
+  const stripped = htmlString.replace(/(<([^>]+)>)/gi, "");
+  // Decode entities (turns &nbsp; into actual spaces)
+  const decoded = decode(stripped);
+  // Deal with invisible characters eg. non-breaking spaces that escape trim()
+  // Strip all spaces, tabs, newlines, and zero-width characters to test if truly empty
+  const pureText = decoded.replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '');
+  
+  // Catch the artifacts
+  if (pureText === '' || pureText === '[&hellip;]' || pureText === '[...]') {
+    return '';
+  }
+  // If it has real letters/text, return the normally trimmed version
+  return decoded.trim();
+};
+
+// Memoised card component
+const ArticleCard = memo(({ item }: { item: any }) => {
+  const router = useRouter(); // Grab router locally
+
+  const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 200)
+    || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    
+  const headerImageSource = thumbnailUrl 
+    ? { uri: thumbnailUrl } 
+    : require('@/assets/images/Fallback.png');
+
+  const cleanedExcerpt = cleanExcerpt(item.excerpt.rendered);
+
+  return (
+    <PressableRipple style={styles.card} onPress={() => router.push(`/article/${item.id}`)}>
+      <Image 
+          source={headerImageSource} 
+          style={styles.cardImage}
+          contentFit="cover"
+          transition={200}
+        />
+      <View style={styles.cardContent}>
+        <Text
+          style={[
+            styles.cardTitle, 
+            !cleanedExcerpt ? { marginBottom: 0 } : null
+          ]}
+          numberOfLines={2}
+        >
+          {decode(item.title.rendered)}
+        </Text>
+        {cleanedExcerpt ? (
+          <Text style={styles.cardExcerpt} numberOfLines={2}>
+            {cleanedExcerpt}
+          </Text>
+        ) : null}
+      </View>
+    </PressableRipple>
+  );
+});
 
 export default function TfpYearScreen() {
   const { year, issue } = useLocalSearchParams<{ year: string; issue?: string }>();
@@ -155,70 +214,10 @@ export default function TfpYearScreen() {
       : new Date(articles[0].date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     : `Loading...`;
 
-  // Helper to strip <p> tags WordPress wraps around excerpts
-  const cleanExcerpt = (htmlString?: string) => {
-    if (!htmlString) return '';
-
-    // 1. Strip HTML tags
-    const stripped = htmlString.replace(/(<([^>]+)>)/gi, "");
-    
-    // 2. Decode entities (turns &nbsp; into actual Unicode spaces)
-    const decoded = decode(stripped);
-    
-    // 3. AGGRESSIVE INVISIBLE CHARACTER PURGE
-    // React Native's engine often fails to trim() non-breaking spaces (\u00A0)
-    // We strip all spaces, tabs, newlines, and zero-width characters to test if it is truly empty
-    const pureText = decoded.replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '');
-    
-    // 4. Catch the artifacts
-    if (pureText === '' || pureText === '[&hellip;]' || pureText === '[...]') {
-      return '';
-    }
-    
-    // If it has real letters/text, return the normally trimmed version
-    return decoded.trim();
-  };
-
-  const renderArticleCard = ({ item }: { item: any }) => {
-    // Intercept Jetpack URL and shrink to 200x200 for the 120x120 thumbnail, fallback to full size thumbnail
-    const thumbnailUrl = optimiseJetpackUrl(item.jetpack_featured_media_url, 200)
-      || item._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-    // Conditionally use URL image or local fallback
-    const headerImageSource = thumbnailUrl 
-      ? { uri: thumbnailUrl } 
-      : require('@/assets/images/Fallback.png');
-
-    // Clean excerpt first to know if it is empty
-    const cleanedExcerpt = cleanExcerpt(item.excerpt.rendered);
-
-    return (
-      <PressableRipple style={styles.card} onPress={() => router.push(`/article/${item.id}`)}>
-        <Image 
-            source={headerImageSource} 
-            style={styles.cardImage}
-            contentFit="cover"
-            transition={200}
-          />
-        <View style={styles.cardContent}>
-          <Text
-            style={[
-              styles.cardTitle, 
-              // Remove 4px bottom margin if no excerpt, to vertically centre title
-              !cleanedExcerpt ? { marginBottom: 0 } : null
-            ]}
-            numberOfLines={2}
-          >
-            {decode(item.title.rendered)}
-          </Text>
-          {cleanedExcerpt ? (
-            <Text style={styles.cardExcerpt} numberOfLines={2}>
-              {cleanedExcerpt}
-            </Text>
-          ) : null}
-        </View>
-      </PressableRipple>
-    );
-  };
+  // Cached render function
+  const renderArticleCard = useCallback(({ item }: { item: any }) => {
+    return <ArticleCard item={item} />;
+  }, []);
 
   if (!yearData) return <View style={styles.center}><Text>Year not found.</Text></View>;
 
