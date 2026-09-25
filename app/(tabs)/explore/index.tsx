@@ -7,6 +7,7 @@ import { Image } from 'expo-image';
 import { useQuery } from '@tanstack/react-query';
 import { decode } from 'html-entities';
 
+import { useCatalog } from '@/hooks/useCatalog';
 import Colors from '@/constants/Colors';
 import PressableRipple from '@/components/PressableRipple';
 import StylisedSearch from '@/components/icons/StylisedSearch';
@@ -15,7 +16,6 @@ import APOGEEGraphic from '@/components/icons/APOGEEGraphic';
 import BOSMGraphic from '@/components/icons/BOSMGraphic';
 import OasisGraphic from '@/components/icons/OasisGraphic';
 import CFGraphic from '@/components/icons/CFGraphic';
-import { TFP_CATALOG, TFP_YEARS_ORDER, AEP_YEARS_ORDER, BEP_YEARS_ORDER, OEP_YEARS_ORDER } from '@/constants/Publications';
 import ExpanderIcon from '@/components/icons/ExpanderIcon';
 
 const BulletPoint = ({ children }: { children: React.ReactNode }) => {
@@ -52,21 +52,29 @@ const optimiseJetpackUrl = (url: string | undefined, size: number) => {
 };
 
 // Two featured articles on TFP card to be randomly picked from most recent 2 editions of TFP, excluding Editorials, Issue Twos (Elections), Special Issues
-export const fetchTFPRecentArticles = async () => {
+// Standalone JS function, hence we cannot call hook inside it, will pass downloaded catalog into it as argument
+export const fetchTFPRecentArticles = async (catalogData: any) => {
+  // if (!catalogData || !catalogData.TFP_YEARS_ORDER) return [];
+  // This doesn't work as ...
+
+  if (!catalogData || !catalogData.TFP_YEARS_ORDER) {
+    throw new Error("Catalog data not ready");
+  }
+
   const validCategoryIds: number[] = [];
 
-  // 1. Grab the two most recent years from the array
-  const targetYears = [TFP_YEARS_ORDER[0], TFP_YEARS_ORDER[1]];
+  // Get two most recent years from the array
+  const targetYears = [catalogData.TFP_YEARS_ORDER[0], catalogData.TFP_YEARS_ORDER[1]];
 
   // Loop through both years and extract all valid category IDs
   targetYears.forEach((yearKey) => {
-    const catalogData = TFP_CATALOG[yearKey];
-    if (!catalogData) return;
+    const yearData = catalogData.TFP_CATALOG[yearKey];
+    if (!yearData) return;
 
-    catalogData.issues.forEach((issue) => {
+    yearData.issues.forEach((issue: any) => {
       if ('categoryId' in issue) {
         // Skip special issues
-        if (catalogData.hasSpecialIssue && catalogData.specialIssueName && issue.name.includes(catalogData.specialIssueName)) {
+        if (yearData.hasSpecialIssue && yearData.specialIssueName && issue.name.includes(yearData.specialIssueName)) {
           return;
         }
         // Exclude Issue Two (Elections)
@@ -84,12 +92,19 @@ export const fetchTFPRecentArticles = async () => {
 
   const res = await fetch(url);
 
-  if (res.ok) {
-    const parsedUrl = new URL(url);
-    console.log(`✅ [API RES] ${res.status} from /posts${parsedUrl.search}`);
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
   }
 
+  const parsedUrl = new URL(url);
+  console.log(`✅ [API RES] ${res.status} from /posts${parsedUrl.search}`);
+
   const posts = await res.json();
+
+  // Prevent crashes if WordPress returns an error object instead of an array
+  if (!Array.isArray(posts)) {
+    throw new Error("Invalid API response");
+  }
 
   // Articles whose IDs listed here bypass the allowed Editorials check / are forcefully ignored
   const includedArticles: number[] = []; // []
@@ -111,10 +126,12 @@ export const fetchTFPRecentArticles = async () => {
 
 function TFPRecentArticles() {
   const router = useRouter();
+  const { data: catalogData } = useCatalog();
 
   const { data: articles, isLoading } = useQuery({
-    queryKey: ['tfp_recent_random'],
-    queryFn: fetchTFPRecentArticles, // Point to the extracted function
+    queryKey: ['tfp_recent_random', catalogData?.TFP_YEARS_ORDER?.[0]], // Latter is dynamic cache-buster to break it free from preloader's poisoned cache
+    queryFn: () => fetchTFPRecentArticles(catalogData), // Pass the JSON into the function
+    enabled: !!catalogData && !!catalogData.TFP_YEARS_ORDER, // Wait for JSON to download before firing WP query, latter half for strict check before firing
     staleTime: 1000 * 60 * 15, // Cache stays fresh for 15 minutes to respect the preload
   });
 
@@ -163,6 +180,7 @@ function TFPRecentArticles() {
 
 export default function ExploreScreen() {
   const router = useRouter();
+  const { data: catalogData } = useCatalog();
   const { width } = useWindowDimensions();
   // Total screen width minus 20px side margins
   const cardWidth = width - 40; 
@@ -308,7 +326,7 @@ export default function ExploreScreen() {
               {/* APOGEE Card */}
               <PressableRipple 
                 style={{ width: cardWidth, flex: 1 }} 
-                onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'AEP', year: AEP_YEARS_ORDER[0] } })}
+                onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'AEP', year: catalogData?.AEP_YEARS_ORDER?.[0] || '' } })}
               >
                 <View style={styles.cardBody}>
                   <Text style={[styles.cardSubheaderText, { paddingTop: 8 }]}>APOGEE ENGLISH PRESS</Text>
@@ -327,7 +345,7 @@ export default function ExploreScreen() {
               {/* BOSM Card */}
               <PressableRipple 
                 style={{ width: cardWidth, flex: 1 }} 
-                onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'BEP', year: BEP_YEARS_ORDER[0] } })}
+                onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'BEP', year: catalogData?.BEP_YEARS_ORDER?.[0] || '' } })}
               >
                 <View style={styles.cardBody}>
                   <Text style={[styles.cardSubheaderText, { paddingTop: 8 }]}>BOSM ENGLISH PRESS</Text>
@@ -346,7 +364,7 @@ export default function ExploreScreen() {
               {/* OASIS Card */}
               <PressableRipple 
                 style={{ width: cardWidth, flex: 1 }} 
-                onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'OEP', year: OEP_YEARS_ORDER[0] } })}
+                onPress={() => router.push({ pathname: '/festPresses/[year]', params: { press: 'OEP', year: catalogData?.OEP_YEARS_ORDER?.[0] || '' } })}
               >
                 <View style={styles.cardBody}>
                   <Text style={[styles.cardSubheaderText, { paddingTop: 8 }]}>OASIS ENGLISH PRESS</Text>

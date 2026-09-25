@@ -15,13 +15,13 @@ const HIERARCHY_COLORS = [
 ];
 
 // Batch data dictionary
-// When 2026 batch enters 2nd year,  add { year: '2026', members: [...] } to the very top
+// When 2026 batch enters 2nd year,  add { year: '2026', members: [...] } to the very top, present POR's automatically capitalised
 const TEAM_DATA = [
   /*
   {
     year: '2025',
     members: [
-      'Ameya Agarwal', 'Dev Kumar', 'Dhairya Sharma', 'Jagannath Pisharody', 'Khushi Mehta', 'Mitali Kabra', 'Parth Ashwylawan', 'Prabhav Purandare', 'Pratyush Kathuria', 'Pulak Bagaria', 'Shreyas Krishnan', 'Spandan Kulkarni', 'Suhrit Rao', 'Vihaan Goenka'
+      'Aditi Maheshwari', 'Ameya Agarwal', 'Dev Kumar', 'Dhairya Sharma', 'Jagannath Pisharody', 'Khushi Mehta', 'Khyati Singh', 'Mitali Kabra', 'Parth Ashwylawan', 'Prabhav Purandare', 'Pragya Pranjal', 'Pratyush Kathuria', 'Pulak Bagaria', 'Raghav Halan', 'Shraddha Nair', 'Shreyansh Pandey', 'Shreyas Krishnan', 'Spandan Kulkarni', 'Suhrit Rao', 'Vihaan Goenka'
     ]
   },
   {
@@ -46,7 +46,7 @@ const TEAM_DATA = [
  {
     year: '2025',
     members: [
-      'Ameya A', 'Dev K', 'Dhairya S', 'Jagannath P', 'Khushi M', 'Mitali K', 'Parth A', 'Prabhav P', 'Pratyush K', 'Pulak B', 'Shreyas K', 'Spandan K', 'Suhrit R', 'Vihaan G'
+      'Aditi M', 'Ameya A', 'Dev K', 'Dhairya S', 'Jagannath P', 'Khushi M', 'Khyati S', 'Mitali K', 'Parth A', 'Prabhav P', 'Pragya P', 'Pratyush K', 'Pulak B', 'Raghav H', 'Shraddha N', 'Shreyansh P', 'Shreyas K', 'Spandan K', 'Suhrit R', 'Vihaan G'
     ]
   },
   {

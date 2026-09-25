@@ -7,9 +7,9 @@
 - In-article image viewer gallery breaks for dead image URLs
 
 ## Structural & Architectural Changes
+- Robust 'No internet' handling on various screens
 - Search filter: month/year published
 - Use article ID or publication classification to provide 'next/previous article' options after article scrolled to end
-- Smoother in-article PDF viewer that consistently allows zooming in and out
 - Make 'expand' button on in-article PDF previews
 - <u> Set up the MongoDB/FastAPI/etc backend for faster search queries </u>
 - <u> Implement dynamic card ('from the archives') drawing from CF </u>

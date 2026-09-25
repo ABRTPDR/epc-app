@@ -1,11 +1,7 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, Stack } from 'expo-router';
 
-import {
-  AEP_YEARS_ORDER, 
-  BEP_YEARS_ORDER, 
-  OEP_YEARS_ORDER 
-} from '@/constants/Publications';
+import { useCatalog } from '@/hooks/useCatalog';
 import Colors from '@/constants/Colors';
 import BackButton from '@/components/BackButton';
 import SearchButton from '@/components/SearchButton';
@@ -16,7 +12,8 @@ import OasisGraphic from '@/components/icons/OasisGraphic';
 import PressableRipple from '@/components/PressableRipple';
 
 export default function FestPressesIndexScreen() {
-  
+  const { data: catalogData } = useCatalog();
+
   // Route to newest year of selected press, passing press type as parameter
   const handlePressNavigate = (press: 'AEP' | 'BEP' | 'OEP', latestYear: string) => {
     router.push({
@@ -47,7 +44,7 @@ export default function FestPressesIndexScreen() {
 
       <ScrollView contentContainerStyle={styles.listContainer}>
         {/* AEP Card */}
-        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('AEP', AEP_YEARS_ORDER[0])}>
+        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('AEP', catalogData?.AEP_YEARS_ORDER?.[0] || '')}>
           <View style={styles.graphicBox}>
             <APOGEEGraphic width={64} height={64} color='#FFB298' />
           </View>
@@ -55,7 +52,7 @@ export default function FestPressesIndexScreen() {
         </PressableRipple>
 
         {/* BEP Card */}
-        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('BEP', BEP_YEARS_ORDER[0])} >
+        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('BEP', catalogData?.BEP_YEARS_ORDER?.[0] || '')} >
           <View style={styles.graphicBox}>
             <BOSMGraphic style={{marginTop: 2}} width={62} height={62} color='#FFB298' />
           </View>
@@ -63,7 +60,7 @@ export default function FestPressesIndexScreen() {
         </PressableRipple>
 
         {/* OEP Card */}
-        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('OEP', OEP_YEARS_ORDER[0])}>
+        <PressableRipple style={styles.card} onPress={() => handlePressNavigate('OEP', catalogData?.OEP_YEARS_ORDER?.[0] || '')}>
           <View style={styles.graphicBox}>
             <OasisGraphic width={66} height={66} color='#FFB298' />
           </View>

@@ -3,15 +3,17 @@
     "name": "EPC App",
     "slug": "epc-app",
     "scheme": "epcbits",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "4",
+      "buildNumber": "5",
       "infoPList": {
         "LSApplicationQueriesSchemes": [
+          "mailto",
+          "tel",
           "mailto",
           "tel"
         ]
@@ -19,8 +21,13 @@
       "bundleIdentifier": "com.epc.app",
       "associatedDomains": [
         "applinks:epcbits.com",
+        "applinks:map.epcbits.com",
+        "applinks:epcbits.com",
         "applinks:map.epcbits.com"
-      ]
+      ],
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,12 +44,31 @@
           "action": "VIEW",
           "autoVerify": true,
           "data": [
-            { "scheme": "https", "host": "epcbits.com", "pathPrefix": "/" },
-            { "scheme": "http", "host": "epcbits.com", "pathPrefix": "/" },
-            { "scheme": "https", "host": "map.epcbits.com", "pathPrefix": "/" },
-            { "scheme": "http", "host": "map.epcbits.com", "pathPrefix": "/" }
+            {
+              "scheme": "https",
+              "host": "epcbits.com",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "http",
+              "host": "epcbits.com",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "map.epcbits.com",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "http",
+              "host": "map.epcbits.com",
+              "pathPrefix": "/"
+            }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "navigationBar": {
@@ -66,7 +92,7 @@
         }
       ],
       "expo-web-browser",
-      "withAndroidQueries.js",
+      "./withAndroidQueries.js",
       "expo-image"
     ],
     "experiments": {

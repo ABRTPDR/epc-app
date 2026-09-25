@@ -6,7 +6,8 @@ import axios from 'axios';
 import { Image } from 'expo-image';
 import { decode } from 'html-entities';
 
-import { TFP_CATALOG, TFP_YEARS_ORDER, IssueItem } from '@/constants/Publications';
+import { useCatalog } from '@/hooks/useCatalog';
+import { IssueItem } from '@/constants/Publications'; // Keeping IssueItem TS interface so local states don't throw type errors
 import Colors from '@/constants/Colors';
 import BackButton from '@/components/BackButton';
 import DropDownPicker, { DropDownOption } from '@/components/DropDownPicker';
@@ -92,8 +93,13 @@ export default function TfpYearScreen() {
 
   const listRef = useRef<FlatList>(null);
   
+  const { data: catalogData, isLoading: isCatalogLoading } = useCatalog();
+
+  const catalog = catalogData?.TFP_CATALOG || {};
+  const yearsOrder = catalogData?.TFP_YEARS_ORDER || [];
+
   // Fallback if year somehow doesn't exist in catalog
-  const yearData = TFP_CATALOG[year];
+  const yearData = catalog[year];
   const availableIssues = yearData?.issues || [];
 
   // Initialize state with newest issue (first in array)
@@ -103,17 +109,17 @@ export default function TfpYearScreen() {
     useEffect(() => {
       if (availableIssues.length > 0) {
         // If an issue param was passed, find it, else default to the first one
-        const preSelected = issue ? availableIssues.find(i => i.name === issue) : null;
+        const preSelected = issue ? availableIssues.find((i: IssueItem) => i.name === issue) : null;
         setSelectedIssue(preSelected || availableIssues[0]);
       }
     }, [year, issue]);
 
   // Map specific Issue objects into options for Dropdown component
-  const yearOptions: DropDownOption[] = TFP_YEARS_ORDER.map((y) => ({
+  const yearOptions: DropDownOption[] = yearsOrder.map((y: string) => ({
     label: y, 
     value: y  
   }));
-  const issueOptions: DropDownOption[] = availableIssues.map((issue) => ({
+  const issueOptions: DropDownOption[] = availableIssues.map((issue: IssueItem) => ({
     label: issue.name,
     value: issue.name 
   }));
@@ -219,6 +225,7 @@ export default function TfpYearScreen() {
     return <ArticleCard item={item} />;
   }, []);
 
+  if (isCatalogLoading) return <View style={styles.center}><ActivityIndicator size="large" color={Colors.tint} /></View>;
   if (!yearData) return <View style={styles.center}><Text>Year not found.</Text></View>;
 
   return (
@@ -257,7 +264,7 @@ export default function TfpYearScreen() {
           style={{ flex: 6 }}
           outlineColour={Colors.tint}
           onSelect={(option) => {
-            const targetIssue = availableIssues.find(i => i.name === option.value);
+            const targetIssue = availableIssues.find((i: IssueItem) => i.name === option.value);
             if (targetIssue) {
               setSelectedIssue(targetIssue);
               // Force list to snap back to the top, to prevent scroll position sustaining for cached year/issue

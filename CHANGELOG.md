@@ -30,3 +30,12 @@
 - Made article card loading faster on all screens by memoising the components
 - Added auto-swiping animation on 'Fest Presses' card in 'Explore'
 - UI/UX polish
+
+## v0.5.0
+- Transitioned to a JSON catalog directory hosted on a CDN instead of a local catalog directory file, allowing dynamic addition of new issues
+- Made error screens for no internet connectivity
+- App cache auto-clears at 50MB
+- Changes implemented from TODO:
+    - Smoother in-article PDF viewer that consistently allows zooming in and out
+- 'No internet' banner added
+- UI/UX polish

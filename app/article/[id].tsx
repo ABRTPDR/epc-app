@@ -14,16 +14,11 @@ import { HTMLElementModel, HTMLContentModel } from 'react-native-render-html';
 import { fetchArticleById, fetchArticleBySlug } from '@/services/api';
 import Colors from '@/constants/Colors';
 
+import { useCatalog } from '@/hooks/useCatalog';
 import BackButton from '@/components/BackButton';
 import CalendarIcon from '@/components/icons/CalendarIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import PressableRipple from '@/components/PressableRipple';
-import { 
-  TFP_CATALOG, 
-  AEP_CATALOG, 
-  BEP_CATALOG, 
-  OEP_CATALOG 
-} from '@/constants/Publications';
 import PrevIcon from '@/components/icons/PrevIcon';
 import NextIcon from '@/components/icons/NextIcon';
 
@@ -194,16 +189,21 @@ const renderers = {
 };
 
 // Helper function to map WP category IDs back to Press/Year/Issue structure
-function findArticleClassification(categoryIds: number[], articleId: number) {
+function findArticleClassification(categoryIds: number[], articleId: number, catalogData?: any) {
+  if (!catalogData) return null;
+
   const catalogs = [
-    { press: 'TFP', data: TFP_CATALOG },
-    { press: 'AEP', data: AEP_CATALOG },
-    { press: 'BEP', data: BEP_CATALOG },
-    { press: 'OEP', data: OEP_CATALOG },
+    { press: 'TFP', data: catalogData.TFP_CATALOG },
+    { press: 'AEP', data: catalogData.AEP_CATALOG },
+    { press: 'BEP', data: catalogData.BEP_CATALOG },
+    { press: 'OEP', data: catalogData.OEP_CATALOG },
   ];
 
   for (const { press, data } of catalogs) {
-    for (const [year, yearCatalog] of Object.entries(data)) {
+    if (!data) continue;
+    for (const [year, rawYearCatalog] of Object.entries(data)) {
+      const yearCatalog = rawYearCatalog as any;
+      if (!yearCatalog.issues) continue;
       for (const issue of yearCatalog.issues) {
         if ('children' in issue) {
           for (const child of issue.children) {
@@ -235,6 +235,7 @@ function findArticleClassification(categoryIds: number[], articleId: number) {
 export default function ArticleScreen() {
   const { id } = useLocalSearchParams(); // Get ID from URL
   const router = useRouter();
+  const { data: catalogData } = useCatalog(); // Fetch remote catalog
   const insets = useSafeAreaInsets(); // Help place header elements below notches
   const { width, height } = useWindowDimensions(); // Used to scale HTML content and in image gallery zoom
   
@@ -391,15 +392,15 @@ export default function ArticleScreen() {
         if (!initialPinchDistance.current) {
           initialPinchDistance.current = currentDistance;
           
-          // 1. Find the exact center of the pinch
+          // Find the centre of the pinch
           const pinchX = (t1.pageX + t2.pageX) / 2;
           const pinchY = (t1.pageY + t2.pageY) / 2;
           
-          // 2. Calculate the offset from the dead-center of the screen
+          // Calculate the offset from the centre of the screen
           const offsetX = pinchX - (width / 2);
           const offsetY = pinchY - (height / 2);
           
-          // Heuristic bounds check: If pinch is in the top/bottom 25%, it's likely outside the contained image bounds
+          // Heuristic bounds check: If pinch is in the top/bottom 25%, it is likely outside the contained image bounds
           const isOutsideImage = pinchY < height * 0.25 || pinchY > height * 0.75;
           
           // Store the starting focal point (or default to 0 if outside bounds)
@@ -425,16 +426,16 @@ export default function ArticleScreen() {
     
     onPanResponderRelease: (evt, gestureState) => {
       if (!initialPinchDistance.current) {
-        // --- SWIPE LOGIC ---
+        // Swipe logic
         if (gestureState.dx > 50 && currentImgIndex > 0) {
-          // Swipe Right
+          // Swipe right
           Animated.timing(panX, { toValue: width, duration: 150, useNativeDriver: true }).start(() => {
             setCurrentImgIndex(prev => prev - 1);
             panX.setValue(-width);
             Animated.spring(panX, { toValue: 0, useNativeDriver: true, bounciness: 6 }).start();
           });
         } else if (gestureState.dx < -50 && currentImgIndex < articleImages.length - 1) {
-          // Swipe Left
+          // Swipe left
           Animated.timing(panX, { toValue: -width, duration: 150, useNativeDriver: true }).start(() => {
             setCurrentImgIndex(prev => prev + 1);
             panX.setValue(width);
@@ -489,7 +490,7 @@ export default function ArticleScreen() {
 
   // Find classification
   const categoryIds = article.categories || [];
-  const classification = findArticleClassification(categoryIds, article.id);
+  const classification = findArticleClassification(categoryIds, article.id, catalogData);
   
   // Strip special fest names from year string for the pill (eg. "2026 - The Skeumorph" -> "2026")
   const cleanYear = classification?.year.split(' –')[0] || '';

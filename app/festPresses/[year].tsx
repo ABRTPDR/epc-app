@@ -6,15 +6,8 @@ import axios from 'axios';
 import { Image } from 'expo-image';
 import { decode } from 'html-entities';
 
-import { 
-  AEP_CATALOG,
-  AEP_YEARS_ORDER,
-  BEP_CATALOG,
-  BEP_YEARS_ORDER,
-  OEP_CATALOG,
-  OEP_YEARS_ORDER,
-  IssueItem
-} from '@/constants/Publications';
+import { useCatalog } from '@/hooks/useCatalog';
+import { IssueItem } from '@/constants/Publications'; // Keeping IssueItem TS interface so local states don't throw type errors
 import Colors from '@/constants/Colors';
 import BackButton from '@/components/BackButton';
 import DropDownPicker, { DropDownOption } from '@/components/DropDownPicker';
@@ -102,10 +95,12 @@ export default function FestPressYearScreen() {
   const { year, press, issue } = useLocalSearchParams<{ year: string; press: 'AEP' | 'BEP' | 'OEP'; issue?: string }>();
 
   const listRef = useRef<SectionList>(null);
+
+  const { data: catalogData, isLoading: isCatalogLoading } = useCatalog();
   
-  // Dynamically select correct dictionary
-  const catalog = press === 'AEP' ? AEP_CATALOG : press === 'BEP' ? BEP_CATALOG : OEP_CATALOG;
-  const yearData = catalog[year];
+  // Dynamically select correct dictionary from remote JSON
+  const catalog = press === 'AEP' ? catalogData?.AEP_CATALOG : press === 'BEP' ? catalogData?.BEP_CATALOG : catalogData?.OEP_CATALOG;
+  const yearData = catalog?.[year];
   const availableIssues = yearData?.issues || [];
 
   const [selectedIssue, setSelectedIssue] = useState<IssueItem>(availableIssues[0]);
@@ -114,10 +109,10 @@ export default function FestPressYearScreen() {
   useEffect(() => {
     if (availableIssues.length > 0) {
       // If an issue param was passed, find it, else default to first one
-      const preSelected = issue ? availableIssues.find(i => i.name === issue) : null;
+      const preSelected = issue ? availableIssues.find((i: IssueItem) => i.name === issue) : null;
       setSelectedIssue(preSelected || availableIssues[0]);
     }
-  }, [year, press, issue]);
+  }, [year, press, issue, catalogData]);
 
   // Extract 4-digit year for the dropdown display (eg. "2026" from "2026 - The Skeumorph")
   const shortYear = year?.substring(0, 4);
@@ -128,15 +123,15 @@ export default function FestPressYearScreen() {
   const festName = splitYear.length > 1 ? splitYear[1]?.trim() : null;
 
   // Get array of years based on the active press
-  const yearsOrder = press === 'AEP' ? AEP_YEARS_ORDER : press === 'BEP' ? BEP_YEARS_ORDER : OEP_YEARS_ORDER;
+  const yearsOrder = (press === 'AEP' ? catalogData?.AEP_YEARS_ORDER : press === 'BEP' ? catalogData?.BEP_YEARS_ORDER : catalogData?.OEP_YEARS_ORDER) || [];
   
   // Format into { label, value } pairs for the DropDownPicker
-  const yearOptions: DropDownOption[] = yearsOrder.map((y) => ({
+  const yearOptions: DropDownOption[] = yearsOrder.map((y: string) => ({
     label: y.substring(0, 4), // Dropdown UI displays "2026"
     value: y // Background logic uses "2026 - The Skeumorph"
   }));
 
-  const issueOptions: DropDownOption[] = availableIssues.map((issue) => ({
+  const issueOptions: DropDownOption[] = availableIssues.map((issue: IssueItem) => ({
     label: issue.name,
     value: issue.name // Using name as unique value since GroupedIssues lack categoryIds
   }));
@@ -268,8 +263,7 @@ export default function FestPressYearScreen() {
           }
           
           // Else, check if it matches the category ID or is in includedArticles
-          return a.categories.includes(child.categoryId) || 
-                 (child.includedArticles && child.includedArticles.includes(a.id));
+          return a.categories?.includes(child.categoryId) || (child.includedArticles && child.includedArticles.includes(a.id));
         })
       })).filter(section => section.data.length > 0); // Hide subheadings that have 0 articles
     } 
@@ -288,6 +282,7 @@ export default function FestPressYearScreen() {
     return <ArticleCard item={item} />;
   }, []);
 
+  if (isCatalogLoading) return <View style={styles.center}><ActivityIndicator size="large" color={Colors.yellow} /></View>;
   if (!yearData) return <View style={styles.center}><Text>Year not found.</Text></View>;
 
   return (
@@ -335,7 +330,7 @@ export default function FestPressYearScreen() {
           style={{ flex: 0.6 }}
           outlineColour={Colors.yellow}
           onSelect={(option) => {
-            const targetIssue = availableIssues.find(i => i.name === option.value);
+            const targetIssue = availableIssues.find((i: IssueItem) => i.name === option.value);
             if (targetIssue) {
               setSelectedIssue(targetIssue);
               // Force list to snap back to the top, to prevent scroll position sustaining for cached year/issue

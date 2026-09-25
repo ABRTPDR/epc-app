@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, Stack } from 'expo-router';
 
-import { TFP_CATALOG, TFP_YEARS_ORDER } from '@/constants/Publications';
+import { useCatalog } from '@/hooks/useCatalog';
 import Colors from '@/constants/Colors';
 import BackButton from '@/components/BackButton';
 import SearchButton from '@/components/SearchButton';
@@ -9,6 +9,12 @@ import EPCGraphic from '@/components/icons/EPCGraphic';
 import PressableRipple from '@/components/PressableRipple';
 
 export default function TfpScreen() {
+  const { data: catalogData } = useCatalog();
+
+  // Extract data with fallbacks while JSON loads
+  const yearsOrder = catalogData?.TFP_YEARS_ORDER || [];
+  const catalog = catalogData?.TFP_CATALOG || {};
+
   return (
     <View style={styles.container}>     
       <Stack.Screen options={{ headerShown: false }} />
@@ -28,8 +34,8 @@ export default function TfpScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
 
         <View style={styles.listContainer}>
-          {TFP_YEARS_ORDER.map((yearKey) => {
-            const yearData = TFP_CATALOG[yearKey];
+          {yearsOrder.map((yearKey: string) => {
+            const yearData = catalog[yearKey];
             
             return (
               <PressableRipple 

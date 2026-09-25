@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ViewStyle, Pressable } from 'react-native';
+import { useState, useRef } from 'react';
+import { View, Text, StyleSheet, ViewStyle, Pressable, ScrollView, Modal } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import DropDownIcon from './icons/DropDownIcon';
@@ -28,10 +28,25 @@ export default function DropDownPicker({
   outlineColour,
 }: DropDownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  
+  // 1. References for layout and teleporting
+  const buttonRef = useRef<View>(null);
+  const [dropdownLayout, setDropdownLayout] = useState({ top: 0, left: 0, width: 0 });
+
+  // 2. NEW: References to track and control scroll position
+  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollOffset = useRef(0);
 
   const handlePress = () => {
     if (!disabled && options.length > 0) {
-      setIsOpen(!isOpen);
+      if (!isOpen) {
+        buttonRef.current?.measure((x, y, width, height, pageX, pageY) => {
+          setDropdownLayout({ top: pageY - 36, left: pageX, width });
+          setIsOpen(true);
+        });
+      } else {
+        setIsOpen(false);
+      }
     }
   };
 
@@ -43,49 +58,81 @@ export default function DropDownPicker({
   };
 
   return (
-    <View style={[style, { zIndex: isOpen ? 100 : 1 }]}>
-      
-      {/* 1. The Standard Background Button */}
-      <PressableRipple 
-        style={[
-          styles.dropdownPill,
-          outlineColour ? { borderWidth: 2, borderColor: outlineColour } : null
-        ]} 
-        onPress={handlePress}
-      >
-        <Text style={styles.dropdownText} numberOfLines={1}>{value}</Text>
-        <DropDownIcon height={16} width={16} />
-      </PressableRipple>
+    <>
+      <View ref={buttonRef} collapsable={false} style={style}>
+        <PressableRipple 
+          style={[
+            styles.dropdownPill,
+            outlineColour ? { borderWidth: 2, borderColor: outlineColour } : null
+          ]} 
+          onPress={handlePress}
+        >
+          <Text style={styles.dropdownText} numberOfLines={1}>{value}</Text>
+          <DropDownIcon height={16} width={16} />
+        </PressableRipple>
+      </View>
 
-      {/* 2. The Overlapping Dropdown Menu */}
       {isOpen && !disabled && options.length > 0 && (
-        <>
-          {/* Invisible Backdrop to handle taps completely outside the menu */}
-          <Pressable 
-            style={styles.backdrop} 
-            onPress={() => setIsOpen(false)} 
-          />
+        <Modal 
+          transparent 
+          visible={isOpen} 
+          animationType="none" 
+          onRequestClose={() => setIsOpen(false)} 
+        >
+          <Pressable style={styles.backdrop} onPress={() => setIsOpen(false)} />
           
-          {/* Popover placed absolutely over the exact coordinate origin of the button */}
-          <View style={styles.popover}>
-            {options.map((option) => (
-              <PressableRipple 
-                key={option.value}
-                style={styles.popoverOption}
-                onPress={() => handleSelect(option)}
-              >
-                <Text style={[
-                  styles.popoverOptionText,
-                  value === option.label && styles.popoverOptionActive
-                ]}>
-                  {option.label}
-                </Text>
-              </PressableRipple>
-            ))}
+          <View style={[
+            styles.popover, 
+            { top: dropdownLayout.top, left: dropdownLayout.left, width: dropdownLayout.width }
+          ]}>
+            <ScrollView 
+              ref={scrollViewRef} // Attach the ref so we can command it
+              style={styles.popoverScroll}
+              showsVerticalScrollIndicator={true}
+              persistentScrollbar={true} 
+              bounces={false}
+              
+              // --- NEW: Scroll tracking & restoring ---
+              scrollEventThrottle={16} // Fires the scroll event smoothly
+              onScroll={(e) => {
+                // Silently save the exact Y position every time the user scrolls
+                scrollOffset.current = e.nativeEvent.contentOffset.y;
+              }}
+              onLayout={() => {
+                // The millisecond the dropdown re-renders, jump back to the saved position!
+                if (scrollViewRef.current && scrollOffset.current > 0) {
+                  scrollViewRef.current.scrollTo({ y: scrollOffset.current, animated: false });
+                }
+              }}
+            >
+              {options.map((option, index) => {
+                const isFirst = index === 0;
+                const isLast = index === options.length - 1;
+
+                return (
+                  <PressableRipple 
+                    key={option.value}
+                    style={[
+                      styles.popoverOption,
+                      isFirst && styles.firstOption, 
+                      isLast && styles.lastOption,   
+                    ]}
+                    onPress={() => handleSelect(option)}
+                  >
+                    <Text style={[
+                      styles.popoverOptionText,
+                      value === option.label && styles.popoverOptionActive
+                    ]}>
+                      {option.label}
+                    </Text>
+                  </PressableRipple>
+                );
+              })}
+            </ScrollView>
           </View>
-        </>
+        </Modal>
       )}
-    </View>
+    </>
   );
 }
 
@@ -104,36 +151,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.text,
   },
-
-  // A massive negative boundary that covers the screen behind the popover
   backdrop: {
-    position: 'absolute',
-    top: -2000,
-    bottom: -2000,
-    left: -2000,
-    right: -2000,
-    zIndex: 99, 
+    ...StyleSheet.absoluteFill, 
+    zIndex: 1, 
   },
-  
-  // The actual floating menu
   popover: {
     position: 'absolute',
-    top: 2,  // Snaps perfectly to the top of the pill
-    left: 0, // Snaps perfectly to the left of the pill
-    minWidth: '100%', // Ensures it is at least as wide as the pill, but can grow
     backgroundColor: '#FFF', 
     borderRadius: 20,
-    zIndex: 100,
-
-    // Shadows to make it float
+    zIndex: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
   },
+  popoverScroll: {
+    borderRadius: 20, 
+    overflow: 'hidden', 
+    maxHeight: 464,
+    flexGrow: 0,
+  },
   popoverOption: {
-    paddingVertical: 18, // Matches the pill padding so the text aligns perfectly
+    height: 58,
+    justifyContent: 'center',
     paddingHorizontal: 16,
   },
   popoverOptionText: {
@@ -144,5 +185,13 @@ const styles = StyleSheet.create({
   popoverOptionActive: { 
     fontFamily: 'LatoSemibold', 
     color: Colors.text, 
+  },
+  firstOption: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  lastOption: {
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   }
 });

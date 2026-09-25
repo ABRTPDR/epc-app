@@ -1,32 +1,27 @@
-import { Animated, StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
-import { useRef, useEffect } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import Toast from 'react-native-toast-message';
-import { decode } from 'html-entities';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Link } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { decode } from 'html-entities';
+import { useEffect, useRef } from 'react';
+import { Animated, Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 import PressableRipple from '@/components/PressableRipple';
 import EpcLogo from '@/components/icons/EpcLogo';
 import ExpanderIcon from '@/components/icons/ExpanderIcon';
-import GamesWordleLogo from '@/components/icons/GamesWordleLogo';
-import GamesSudokuLogo from '@/components/icons/GamesSudokuLogo';
 import GamesConnectionsLogo from '@/components/icons/GamesConnectionsLogo';
+import GamesSudokuLogo from '@/components/icons/GamesSudokuLogo';
+import GamesWordleLogo from '@/components/icons/GamesWordleLogo';
 
+import { EPCArticle, wpApi } from '@/services/api';
 import { useQuery } from '@tanstack/react-query';
-import { wpApi, EPCArticle } from '@/services/api';
 
 import Colors from '@/constants/Colors';
 import { Spacing } from '@/constants/Spacing';
-import { 
-  TFP_CATALOG, 
-  AEP_CATALOG, 
-  BEP_CATALOG, 
-  OEP_CATALOG 
-} from '@/constants/Publications';
+import { useCatalog } from '@/hooks/useCatalog';
 
 // Keep the splash screen visible while fetching initial data
 SplashScreen.preventAutoHideAsync();
@@ -70,34 +65,35 @@ const handleComingSoonPress = () => {
 };
 
 // Helper function to map WP category IDs back to Press/Year/Issue structure
-function findArticleClassification(categoryIds: number[], articleId: number) {
+function findArticleClassification(categoryIds: number[], articleId: number, catalogData?: any) {
+  if (!catalogData) return null;
+
   const catalogs = [
-    { press: 'TFP', data: TFP_CATALOG },
-    { press: 'AEP', data: AEP_CATALOG },
-    { press: 'BEP', data: BEP_CATALOG },
-    { press: 'OEP', data: OEP_CATALOG },
+    { press: 'TFP', data: catalogData.TFP_CATALOG },
+    { press: 'AEP', data: catalogData.AEP_CATALOG },
+    { press: 'BEP', data: catalogData.BEP_CATALOG },
+    { press: 'OEP', data: catalogData.OEP_CATALOG },
   ];
 
   for (const { press, data } of catalogs) {
-    for (const [year, yearCatalog] of Object.entries(data)) {
+    if (!data) continue;
+    for (const [year, rawYearCatalog] of Object.entries(data)) {
+      const yearCatalog = rawYearCatalog as any; 
+      if (!yearCatalog.issues) continue; 
       for (const issue of yearCatalog.issues) {
         if ('children' in issue) {
           for (const child of issue.children) {
-            // Check: is it explicitly included here?
             if (child.includedArticles?.includes(articleId)) {
               return { press, year, issueName: issue.name };
             }
-            // Fallback check: does it match the category and is not excluded?
             if (categoryIds.includes(child.categoryId) && !child.excludedArticles?.includes(articleId)) {
               return { press, year, issueName: issue.name };
             }
           }
         } else {
-          // Check: is it explicitly included here?
           if (issue.includedArticles?.includes(articleId)) {
             return { press, year, issueName: issue.name };
           }
-          // Fallback check: does it match the category and is not excluded?
           if (categoryIds.includes(issue.categoryId) && !issue.excludedArticles?.includes(articleId)) {
             return { press, year, issueName: issue.name };
           }
@@ -111,20 +107,27 @@ function findArticleClassification(categoryIds: number[], articleId: number) {
 export default function HomeScreen() {
   const scrollX = useRef(new Animated.Value(0)).current;
 
-  const { data: articles, isLoading, isError } = useQuery({
+  // Fetch JSON Catalog
+  const { data: catalogData, isError: isCatalogError, refetch: refetchCatalog } = useCatalog();
+
+  // Fetch Top Articles
+  const { data: articles, isLoading: isArticlesLoading, isError: isArticlesError, refetch: refetchArticles } = useQuery({
     queryKey: ['epc_top_articles'],
     queryFn: fetchTopArticles,
   });
 
+  const isError = isCatalogError || isArticlesError;
+  const isDataMissing = !catalogData || !articles;
+
   // Watch loading state and hide splash screen when data ready
   useEffect(() => {
-    if (!isLoading) {
+    if (!isArticlesLoading) {
       SplashScreen.hideAsync();
     }
-  }, [isLoading]);
+  }, [isArticlesLoading]);
 
   // Prevent FlatList from rendering an empty array and crashing its index
-  if (isLoading || !articles) {
+  if (isArticlesLoading && !articles) {
     // Returns a blank background that stays perfectly hidden behind your Splash Screen
     return <View style={styles.container} />; 
   }
@@ -142,7 +145,7 @@ export default function HomeScreen() {
       : require('@/assets/images/Fallback.png');
 
     const categoryIds = item.categories || [];
-    const classification = findArticleClassification(categoryIds, item.id);
+    const classification = findArticleClassification(categoryIds, item.id, catalogData);
     
     const cleanYear = classification?.year.split(' –')[0] || '';
 

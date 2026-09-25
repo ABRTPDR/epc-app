@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import Constants from 'expo-constants';
 
+import { getCacheSizeBytes, formatCacheSize, wipeAppCache } from '@/services/cacheManager';
 import Colors from '@/constants/Colors';
 import BackButton from '@/components/BackButton';
 import PressableRipple from '@/components/PressableRipple';
@@ -34,20 +35,10 @@ export default function SettingsScreen() {
     calculateCacheSize();
   }, []);
 
-  // Instant synchronous cache sizing (API)
+  // Instant synchronous cache sizing
   const calculateCacheSize = () => {
-    const cacheDir = new Directory(Paths.cache);
-    const bytes = cacheDir.size || 0;
-    
-    if (bytes === 0) {
-      setCacheSize('0 B');
-      return;
-    }
-    
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    setCacheSize(`${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`);
+    const bytes = getCacheSizeBytes();
+    setCacheSize(formatCacheSize(bytes))
   };
 
   const handleClearCache = async () => {
@@ -56,45 +47,12 @@ export default function SettingsScreen() {
     setIsClearing(true);
     setCacheSize('Clearing...');
 
-    // On hitting clear cache:
-    try {
-      // Clear React Query memory cache
-      queryClient.clear();
-
-      // Clear Expo Image memory and disk cache
-      await Image.clearMemoryCache();
-      await Image.clearDiskCache();
-
-      // Synchronous directory wiping (API)
-      const cacheDir = new Directory(Paths.cache);
-      
-      // Ensure directory actually exists before trying to list its contents
-      if (cacheDir.exists) {
-        // list() returns a unified array of both File and Directory objects
-        const contents = cacheDir.list();
-        
-        for (const item of contents) {
-          // The new API's delete() works on both files and folders
-          item.delete(); 
-        }
-      }
-
-      // Re-calculate cache
-      calculateCacheSize();
-      
-      ClearCachePress();
-
-    } catch (error) {
-      console.log('Error clearing cache:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Failed to clear cache',
-        position: 'bottom'
-      });
-      calculateCacheSize(); // Fallback to current size on error
-    } finally {
-      setIsClearing(false);
-    }
+    await wipeAppCache(queryClient);
+    
+    // UI Feedback
+    calculateCacheSize();
+    ClearCachePress();
+    setIsClearing(false);
   };
 
   return (
@@ -113,6 +71,7 @@ export default function SettingsScreen() {
 
         <View style={styles.menuContainer}>
           
+          {/*
           <PressableRipple style={styles.menuCard}>
             <Text style={styles.menuText}>Notifications</Text>
           </PressableRipple>
@@ -120,6 +79,7 @@ export default function SettingsScreen() {
           <PressableRipple style={styles.menuCard}>
             <Text style={styles.menuText}>Some setting</Text>
           </PressableRipple>
+          */}
 
           <PressableRipple style={[styles.menuCard, {height: 74}]}  onPress={handleClearCache}>
             <Text style={styles.menuText}>Clear app cache</Text>
