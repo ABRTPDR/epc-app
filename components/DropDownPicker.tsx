@@ -61,9 +61,10 @@ export default function DropDownPicker({
   const handlePress = () => {
     if (!disabled && options.length > 0) {
       if (!isOpen) {
-        buttonRef.current?.measureInWindow((x, y, width, height) => {
-          // 'top: y' anchors the dropdown list to the top edge of the initiating button
-          setDropdownLayout({ top: y+2, left: x, width });
+        // Standard .measure provides pageX and pageY which are relative to the absolute physical screen, matching the coordinate space of the modal
+        // Without this, on compiled APK build, dropdown menu begins above top edge of initiating button
+        buttonRef.current?.measure((x, y, width, height, pageX, pageY) => {
+          setDropdownLayout({ top: pageY + 2, left: pageX, width });
           setIsOpen(true);
         });
       } else {
