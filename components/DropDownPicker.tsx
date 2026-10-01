@@ -98,7 +98,8 @@ export default function DropDownPicker({
         <Modal 
           transparent 
           visible={isOpen} 
-          animationType="none" 
+          animationType="none"
+          statusBarTranslucent={true} // Forces coordinate sync with measureInWindow, without this the production APK has the dropdown list shifted above top edge
           onRequestClose={() => setIsOpen(false)} 
         >
           <Pressable style={styles.backdrop} onPress={() => setIsOpen(false)} />
