@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ViewStyle, Pressable, ScrollView, Modal } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle, Pressable, ScrollView, Modal, Animated } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import DropDownIcon from './icons/DropDownIcon';
@@ -29,19 +29,41 @@ export default function DropDownPicker({
 }: DropDownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   
-  // 1. References for layout and teleporting
+  // References for layout and teleporting
   const buttonRef = useRef<View>(null);
   const [dropdownLayout, setDropdownLayout] = useState({ top: 0, left: 0, width: 0 });
 
-  // 2. NEW: References to track and control scroll position
+  // References to track and control scroll position
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollOffset = useRef(0);
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  // Custom scrollbar math (not relying on default Android scrollbar as colour varies with light/dark mode)
+  const ITEM_HEIGHT = 58;
+  const MAX_ITEMS = 8;
+  const contentHeight = options.length * ITEM_HEIGHT;
+  const visibleHeight = Math.min(contentHeight, ITEM_HEIGHT * MAX_ITEMS);
+  const hasScrollbar = options.length > MAX_ITEMS;
+  
+  // Track is slightly smaller than the container to allow for rounded padding
+  const trackHeight = visibleHeight - 12; 
+  const indicatorHeight = Math.max((visibleHeight / contentHeight) * trackHeight, 30);
+  const scrollRange = contentHeight - visibleHeight;
+  const indicatorScrollRange = trackHeight - indicatorHeight;
+
+  // Maps the invisible list scroll to the visible scrollbar thumb translation
+  const indicatorTranslateY = scrollY.interpolate({
+    inputRange: [0, scrollRange],
+    outputRange: [0, indicatorScrollRange],
+    extrapolate: 'clamp',
+  });
 
   const handlePress = () => {
     if (!disabled && options.length > 0) {
       if (!isOpen) {
-        buttonRef.current?.measure((x, y, width, height, pageX, pageY) => {
-          setDropdownLayout({ top: pageY - 36, left: pageX, width });
+        buttonRef.current?.measureInWindow((x, y, width, height) => {
+          // 'top: y' anchors the dropdown list to the top edge of the initiating button
+          setDropdownLayout({ top: y+2, left: x, width });
           setIsOpen(true);
         });
       } else {
@@ -85,23 +107,31 @@ export default function DropDownPicker({
             styles.popover, 
             { top: dropdownLayout.top, left: dropdownLayout.left, width: dropdownLayout.width }
           ]}>
-            <ScrollView 
-              ref={scrollViewRef} // Attach the ref so we can command it
+            <Animated.ScrollView 
+              ref={scrollViewRef}
               style={styles.popoverScroll}
-              showsVerticalScrollIndicator={true}
-              persistentScrollbar={true} 
+              showsVerticalScrollIndicator={false} // Hide the native scrollbar
               bounces={false}
+              scrollEventThrottle={16}
               
-              // --- NEW: Scroll tracking & restoring ---
-              scrollEventThrottle={16} // Fires the scroll event smoothly
-              onScroll={(e) => {
-                // Silently save the exact Y position every time the user scrolls
-                scrollOffset.current = e.nativeEvent.contentOffset.y;
-              }}
+              // Animated.event seamlessly drives the custom scrollbar 
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                {
+                  useNativeDriver: true, // Hardware acceleration for buttery smoothness
+                  listener: (e: any) => {
+                    scrollOffset.current = e.nativeEvent.contentOffset.y;
+                  }
+                }
+              )}
               onLayout={() => {
-                // The millisecond the dropdown re-renders, jump back to the saved position!
                 if (scrollViewRef.current && scrollOffset.current > 0) {
-                  scrollViewRef.current.scrollTo({ y: scrollOffset.current, animated: false });
+                  // Safe cast for RN version compatibility (some require .getNode())
+                  const scrollNode = (scrollViewRef.current as any).scrollTo 
+                    ? scrollViewRef.current 
+                    : (scrollViewRef.current as any).getNode();
+                    
+                  scrollNode?.scrollTo({ y: scrollOffset.current, animated: false });
                 }
               }}
             >
@@ -128,7 +158,17 @@ export default function DropDownPicker({
                   </PressableRipple>
                 );
               })}
-            </ScrollView>
+            </Animated.ScrollView>
+
+            {/* Custom animated scrollbar overlay */}
+            {hasScrollbar && (
+              <View style={[styles.scrollbarTrack, { height: trackHeight }]}>
+                <Animated.View style={[
+                  styles.scrollbarThumb,
+                  { height: indicatorHeight, transform: [{ translateY: indicatorTranslateY }] }
+                ]} />
+              </View>
+            )}
           </View>
         </Modal>
       )}
@@ -176,6 +216,7 @@ const styles = StyleSheet.create({
     height: 58,
     justifyContent: 'center',
     paddingHorizontal: 16,
+    paddingRight: 24, // Prevents text from colliding with the custom scrollbar
   },
   popoverOptionText: {
     fontFamily: 'Lato', 
@@ -193,5 +234,19 @@ const styles = StyleSheet.create({
   lastOption: {
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+  },
+  scrollbarTrack: {
+    position: 'absolute',
+    right: 6, // Snug against the right edge
+    top: 6,
+    width: 4,
+    borderRadius: 2,
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
+  },
+  scrollbarThumb: {
+    width: '100%',
+    backgroundColor: Colors.lightGrey,
+    borderRadius: 2,
   }
 });
