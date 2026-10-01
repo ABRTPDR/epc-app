@@ -21,7 +21,7 @@ const TEAM_DATA = [
   {
     year: '2025',
     members: [
-      'Aditi Maheshwari', 'Ameya Agarwal', 'Dev Kumar', 'Dhairya Sharma', 'Jagannath Pisharody', 'Khushi Mehta', 'Khyati Singh', 'Mitali Kabra', 'Parth Ashwylawan', 'Prabhav Purandare', 'Pragya Pranjal', 'Pratyush Kathuria', 'Pulak Bagaria', 'Raghav Halan', 'Shraddha Nair', 'Shreyansh Pandey', 'Shreyas Krishnan', 'Spandan Kulkarni', 'Suhrit Rao', 'Vihaan Goenka'
+      'Aditi Maheshwari', 'Ameya Agarwal', 'Dev Kumar', 'Dhairya Sharma', 'Jagannath Pisharody', 'Khushi Mehta', 'Mitali Kabra', 'Prabhav Purandare', 'Pragya Pranjal', 'Pratyush Kathuria', 'Pulak Bagaria', 'Raghav Halan', 'Shraddha Nair', 'Shreyansh Pandey', 'Shreyas Krishnan', 'Spandan Kulkarni', 'Suhrit Rao', 'Vihaan Goenka'
     ]
   },
   {
@@ -39,14 +39,14 @@ const TEAM_DATA = [
   {
     year: '2022',
     members: [
-      'Adhvaith KS', 'Aniruddha Deshpande (Chief Designer)', 'Anshuman X', 'Esha Jain (BEP Editor)', 'Garvit X', 'Harsh Panwar (OEP Editor)', 'Ishaan X', 'Nishit X', 'Shivansh Dwivedi (TFP Editor)', 'Shreyas Mishra', 'Siddharth Garg (CF Editor)', 'Stuti Sinha (AEP Editor)', 'Tarun S', 'Vivegan S'
+      'Adhvaith KS', 'Aniruddha Deshpande (Chief Designer)', 'Anshuman Dash', 'Esha Jain (BEP Editor)', 'Garvit Singhal', 'Harsh Panwar (OEP Editor)', 'Ishaan Sharma', 'Nishit Roshan', 'Shivansh Dwivedi (TFP Editor)', 'Shreyas Mishra', 'Siddharth Garg (CF Editor)', 'Stuti Sinha (AEP Editor)', 'Tarun S', 'Vivegan S'
     ]
   },
   */
  {
     year: '2025',
     members: [
-      'Aditi M', 'Ameya A', 'Dev K', 'Dhairya S', 'Jagannath P', 'Khushi M', 'Khyati S', 'Mitali K', 'Parth A', 'Prabhav P', 'Pragya P', 'Pratyush K', 'Pulak B', 'Raghav H', 'Shraddha N', 'Shreyansh P', 'Shreyas K', 'Spandan K', 'Suhrit R', 'Vihaan G'
+      'Aditi M', 'Ameya A', 'Dev K', 'Dhairya S', 'Jagannath P', 'Khushi M', 'Mitali K', 'Prabhav P', 'Pragya P', 'Pratyush K', 'Pulak B', 'Raghav H', 'Shraddha N', 'Shreyansh P', 'Shreyas K', 'Spandan K', 'Suhrit R', 'Vihaan G'
     ]
   },
   {
@@ -64,7 +64,7 @@ const TEAM_DATA = [
   {
     year: '2022',
     members: [
-      'Adhvaith KS', 'Aniruddha D (Chief Designer)', 'Anshuman X', 'Esha J (BEP Editor)', 'Garvit X', 'Harsh P (OEP Editor)', 'Ishaan X', 'Nishit X', 'Shivansh D (TFP Editor)', 'Shreyas M', 'Siddharth G (CF Editor)', 'Stuti S (AEP Editor)', 'Tarun S', 'Vivegan S'
+      'Adhvaith KS', 'Aniruddha D (Chief Designer)', 'Anshuman D', 'Esha J (BEP Editor)', 'Garvit S', 'Harsh P (OEP Editor)', 'Ishaan S', 'Nishit R', 'Shivansh D (TFP Editor)', 'Shreyas M', 'Siddharth G (CF Editor)', 'Stuti S (AEP Editor)', 'Tarun S', 'Vivegan S'
     ]
   },
   {
